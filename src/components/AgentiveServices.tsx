@@ -23,22 +23,22 @@ const agents: Agent[] = [
     name: 'Distribution Strategist',
     role: 'Platform & Release Strategy',
     expertise: ['Platform Selection', 'Release Timing', 'Territory Planning'],
-    avatar: '🎯'
+    avatar: '🎯',
   },
   {
     id: 'marketing',
     name: 'Marketing Director',
     role: 'Campaign & Budget Planning',
     expertise: ['Social Media', 'Influencer Outreach', 'Ad Campaigns'],
-    avatar: '📈'
+    avatar: '📈',
   },
   {
     id: 'playlist',
     name: 'Playlist Curator',
     role: 'Playlist Strategy & Promotion',
     expertise: ['Playlist Pitching', 'Genre Analysis', 'Audience Targeting'],
-    avatar: '🎵'
-  }
+    avatar: '🎵',
+  },
 ];
 
 export const AgentiveServices: React.FC = () => {
@@ -52,7 +52,7 @@ export const AgentiveServices: React.FC = () => {
     goals: '',
     budget: '',
     timeline: '',
-    targetPlaylists: []
+    targetPlaylists: [],
   });
 
   const handleAgentSelect = (agent: Agent) => {
@@ -61,19 +61,16 @@ export const AgentiveServices: React.FC = () => {
       {
         role: 'system',
         content: agentPrompts[agent.id].initial,
-        agentId: agent.id
-      }
+        agentId: agent.id,
+      },
     ]);
   };
 
   const handleSendMessage = async (content: string) => {
     setLoading(true);
-    
+
     // Add user message
-    const newMessages = [
-      ...messages,
-      { role: 'user' as const, content, agentId: activeAgent?.id }
-    ];
+    const newMessages = [...messages, { role: 'user' as const, content, agentId: activeAgent?.id }];
     setMessages(newMessages as Message[]);
 
     try {
@@ -87,14 +84,14 @@ export const AgentiveServices: React.FC = () => {
             {
               role: 'system',
               content: `You are a ${activeAgent?.name} specializing in ${activeAgent?.expertise.join(', ')}. 
-                       Respond in a professional but conversational tone.`
+                       Respond in a professional but conversational tone.`,
             },
-            ...newMessages.map(m => ({
+            ...newMessages.map((m) => ({
               role: m.role,
-              content: m.content
-            }))
-          ]
-        })
+              content: m.content,
+            })),
+          ],
+        }),
       });
 
       const reader = response.body.getReader();
@@ -104,25 +101,25 @@ export const AgentiveServices: React.FC = () => {
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        
+
         const chunk = decoder.decode(value);
         const lines = chunk.split('\n');
-        
+
         for (const line of lines) {
           if (line.startsWith('data: ')) {
             const jsonStr = line.slice(6);
             if (jsonStr === '[DONE]') continue;
-            
+
             try {
               const { content } = JSON.parse(jsonStr);
               accumulatedResponse += content;
-              setMessages(prev => [
+              setMessages((prev) => [
                 ...prev.slice(0, -1),
                 {
                   role: 'assistant',
                   content: accumulatedResponse,
-                  agentId: activeAgent?.id
-                }
+                  agentId: activeAgent?.id,
+                },
               ]);
             } catch (e) {
               console.error('Error parsing JSON:', e);
@@ -132,13 +129,13 @@ export const AgentiveServices: React.FC = () => {
       }
     } catch (error) {
       console.error('Error:', error);
-      setMessages(prev => [
+      setMessages((prev) => [
         ...prev,
         {
           role: 'assistant',
           content: 'I apologize, but I encountered an error. Please try again.',
-          agentId: activeAgent?.id
-        }
+          agentId: activeAgent?.id,
+        },
       ]);
     } finally {
       setLoading(false);
@@ -147,7 +144,7 @@ export const AgentiveServices: React.FC = () => {
 
   return (
     <div className="grid grid-cols-[300px,1fr] gap-4 p-4 h-[calc(100vh-4rem)]">
-      <motion.div 
+      <motion.div
         className="bg-white/80 backdrop-blur-sm rounded-lg p-4 overflow-y-auto"
         initial={{ x: -20, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
@@ -159,8 +156,8 @@ export const AgentiveServices: React.FC = () => {
               key={agent.id}
               onClick={() => handleAgentSelect(agent)}
               className={`w-full p-4 text-left rounded-lg transition-colors ${
-                activeAgent?.id === agent.id 
-                  ? 'bg-blue-500 text-white' 
+                activeAgent?.id === agent.id
+                  ? 'bg-blue-500 text-white'
                   : 'bg-gray-50 hover:bg-gray-100'
               }`}
               whileHover={{ scale: 1.02 }}
@@ -192,13 +189,11 @@ export const AgentiveServices: React.FC = () => {
                 <span className="text-2xl">{activeAgent.avatar}</span>
                 <div>
                   <h2 className="font-bold">{activeAgent.name}</h2>
-                  <p className="text-sm text-gray-500">
-                    {activeAgent.expertise.join(' • ')}
-                  </p>
+                  <p className="text-sm text-gray-500">{activeAgent.expertise.join(' • ')}</p>
                 </div>
               </div>
             </div>
-            
+
             <ChatInterface
               messages={messages}
               onSendMessage={handleSendMessage}
@@ -217,4 +212,4 @@ export const AgentiveServices: React.FC = () => {
       </AnimatePresence>
     </div>
   );
-}; 
+};

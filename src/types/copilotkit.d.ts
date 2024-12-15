@@ -1,23 +1,28 @@
-declare module "@copilotkit/react-core" {
-  export const CopilotKit: any;
-  export const useCopilotContext: () => any;
-}
+import type { ReactNode } from 'react';
 
-declare module "@copilotkit/react-textarea" {
-  export const CopilotTextarea: any;
-}
+declare module '@copilotkit/react-core' {
+  interface CopilotKitProps {
+    children: ReactNode;
+    publicApiKey: string;
+  }
 
-declare module "@copilotkit/react-ui" {
   interface Message {
-    role: "system" | "user" | "assistant";
+    role: 'system' | 'user' | 'assistant';
     content: string;
   }
+}
 
-  interface ChatBubbleProps {
-    messages: Message[];
-    className?: string;
-    onError?: (error: Error) => void;
+declare module '@copilotkit/react-textarea' {
+  interface TextareaProps {
+    children: ReactNode;
+    value?: string;
+    onChange?: (value: string) => void;
   }
-  
-  export const ChatBubble: React.FC<ChatBubbleProps>;
-} 
+}
+
+declare module '@copilotkit/react-ui' {
+  interface ChatProps {
+    messages: Message[];
+    onSubmit?: (message: string) => void;
+  }
+}

@@ -6,6 +6,10 @@ import AnimatedButton from './AnimatedButton';
 import LoadingSpinner from './LoadingSpinner';
 import MusicLabelChat from './MusicLabelChat';
 import StrategyDisplay from './StrategyDisplay';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 interface Project {
   artistName: string;
@@ -16,34 +20,28 @@ interface Project {
   distributionPlatforms: string[];
 }
 
-const platforms = [
-  'Spotify',
-  'Apple Music',
-  'YouTube Music',
-  'Amazon Music',
-  'TikTok'
-];
+const platforms = ['Spotify', 'Apple Music', 'YouTube Music', 'Amazon Music', 'TikTok'];
 
 const formVariants = {
   hover: {
-    boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.1)",
+    boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.1)',
     transition: {
-      type: "spring",
+      type: 'spring',
       stiffness: 400,
-      damping: 10
-    }
-  }
+      damping: 10,
+    },
+  },
 };
 
 const inputVariants = {
   focus: {
     scale: 1.02,
     transition: {
-      type: "spring",
+      type: 'spring',
       stiffness: 300,
-      damping: 20
-    }
-  }
+      damping: 20,
+    },
+  },
 };
 
 const MusicLabelDashboard: React.FC = () => {
@@ -57,7 +55,7 @@ const MusicLabelDashboard: React.FC = () => {
     genre: '',
     releaseDate: new Date().toISOString().split('T')[0],
     marketingBudget: 0,
-    distributionPlatforms: []
+    distributionPlatforms: [],
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -70,45 +68,21 @@ const MusicLabelDashboard: React.FC = () => {
         throw new Error('Please fill in all required fields');
       }
 
-      const prompt = `
-Context:
-You are a senior music industry strategist with extensive experience in digital distribution and marketing. You're creating a strategy for:
-Artist: ${project.artistName}
-Track: ${project.trackTitle}
-Genre: ${project.genre}
-Target Audience: Young, digitally-savvy music consumers
-Platforms: ${project.distributionPlatforms.join(', ')}
+      const prompt = `Create a detailed distribution strategy for:
+        Artist: ${project.artistName}
+        Track: ${project.trackTitle}
+        Genre: ${project.genre}
+        Release Date: ${project.releaseDate}
+        Marketing Budget: $${project.marketingBudget}
+        Platforms: ${project.distributionPlatforms.join(', ')}
 
-Ask:
-Create a detailed, actionable distribution strategy following these steps:
-1. Analyze the genre and artist positioning
-2. Develop platform-specific release strategies
-3. Create a marketing timeline
-4. Allocate the marketing budget
-5. Define success metrics
-
-Rules:
-- Focus on practical, actionable steps
-- Include specific platform features and best practices
-- Keep recommendations within the $${project.marketingBudget} budget
-- Prioritize strategies with proven ROI
-- Include specific dates and milestones
-- Maximum 2000 words
-- Use bullet points for clarity
-
-Examples:
-Good strategy example:
-• Release single on Spotify with pre-save campaign 2 weeks before launch
-• Allocate $500 for targeted Instagram ads in week 1
-• Target 10,000 streams in first month
-
-Please structure the response as:
-1. Executive Summary
-2. Platform Strategy
-3. Timeline
-4. Budget Allocation
-5. KPIs
-`;
+        Please include:
+        1. Timeline for release
+        2. Budget allocation
+        3. Platform-specific strategy
+        4. Marketing recommendations
+        5. Key performance indicators
+      `;
 
       const response = await fetch('/api/copilot', {
         method: 'POST',
@@ -117,10 +91,13 @@ Please structure the response as:
         },
         body: JSON.stringify({
           messages: [
-            { role: "system", content: "You are a music industry expert helping to create distribution strategies." },
-            { role: "user", content: prompt }
-          ]
-        })
+            {
+              role: 'system',
+              content: 'You are a music industry expert helping to create distribution strategies.',
+            },
+            { role: 'user', content: prompt },
+          ],
+        }),
       });
 
       const reader = response.body.getReader();
@@ -130,10 +107,10 @@ Please structure the response as:
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        
+
         const chunk = decoder.decode(value);
         const lines = chunk.split('\n');
-        
+
         for (const line of lines) {
           if (line.startsWith('data: ')) {
             const jsonStr = line.slice(6);
@@ -161,24 +138,20 @@ Please structure the response as:
   return (
     <div className="max-w-7xl mx-auto p-6">
       <AnimatedHeader />
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-[1fr,1.5fr] gap-8">
         <div className="space-y-6">
           <div className="bg-white/80 backdrop-blur-sm shadow-xl rounded-[25px] p-8">
             <form onSubmit={handleSubmit} className="space-y-6">
               <h2 className="text-xl font-semibold mb-4">New Release Project</h2>
-              
-              <motion.div 
-                className="space-y-4"
-                variants={inputVariants}
-                whileFocus="focus"
-              >
+
+              <motion.div className="space-y-4" variants={inputVariants} whileFocus="focus">
                 <div>
                   <label className="block text-sm font-medium mb-1">Artist Name</label>
                   <motion.input
                     type="text"
                     value={project.artistName}
-                    onChange={(e) => setProject({...project, artistName: e.target.value})}
+                    onChange={(e) => setProject({ ...project, artistName: e.target.value })}
                     className="w-full p-3 border rounded-[15px] bg-[#EBEFF1] focus:ring-2 focus:ring-blue-500"
                     whileFocus="focus"
                   />
@@ -189,7 +162,7 @@ Please structure the response as:
                   <motion.input
                     type="text"
                     value={project.trackTitle}
-                    onChange={(e) => setProject({...project, trackTitle: e.target.value})}
+                    onChange={(e) => setProject({ ...project, trackTitle: e.target.value })}
                     className="w-full p-3 border rounded-[15px] bg-[#EBEFF1] focus:ring-2 focus:ring-blue-500"
                     whileFocus="focus"
                   />
@@ -199,7 +172,7 @@ Please structure the response as:
                   <label className="block text-sm font-medium mb-1">Genre</label>
                   <motion.select
                     value={project.genre}
-                    onChange={(e) => setProject({...project, genre: e.target.value})}
+                    onChange={(e) => setProject({ ...project, genre: e.target.value })}
                     className="w-full p-3 border rounded-[15px] bg-[#EBEFF1] focus:ring-2 focus:ring-blue-500"
                     whileFocus="focus"
                   >
@@ -216,7 +189,9 @@ Please structure the response as:
                   <motion.input
                     type="number"
                     value={project.marketingBudget}
-                    onChange={(e) => setProject({...project, marketingBudget: Number(e.target.value)})}
+                    onChange={(e) =>
+                      setProject({ ...project, marketingBudget: Number(e.target.value) })
+                    }
                     className="w-full p-3 border rounded-[15px] bg-[#EBEFF1] focus:ring-2 focus:ring-blue-500"
                     whileFocus="focus"
                   />
@@ -225,7 +200,7 @@ Please structure the response as:
                 <div>
                   <label className="block text-sm font-medium mb-1">Distribution Platforms</label>
                   <div className="flex flex-wrap gap-2">
-                    {platforms.map(platform => (
+                    {platforms.map((platform) => (
                       <motion.label
                         key={platform}
                         className="inline-flex items-center p-2 bg-[#EBEFF1] rounded-[15px]"
@@ -238,8 +213,8 @@ Please structure the response as:
                           onChange={(e) => {
                             const updatedPlatforms = e.target.checked
                               ? [...project.distributionPlatforms, platform]
-                              : project.distributionPlatforms.filter(p => p !== platform);
-                            setProject({...project, distributionPlatforms: updatedPlatforms});
+                              : project.distributionPlatforms.filter((p) => p !== platform);
+                            setProject({ ...project, distributionPlatforms: updatedPlatforms });
                           }}
                           className="mr-2"
                         />
@@ -264,7 +239,7 @@ Please structure the response as:
 
           <MusicLabelChat />
         </div>
-        
+
         {(strategy || partialStrategy) && (
           <StrategyDisplay strategy={strategy || partialStrategy} />
         )}

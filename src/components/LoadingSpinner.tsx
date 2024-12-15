@@ -8,9 +8,9 @@ const LoadingSpinner: React.FC = () => {
       transition: {
         duration: 1.5,
         repeat: Infinity,
-        ease: "linear"
-      }
-    }
+        ease: 'linear',
+      },
+    },
   };
 
   const dotVariants = {
@@ -19,9 +19,9 @@ const LoadingSpinner: React.FC = () => {
       transition: {
         duration: 1,
         repeat: Infinity,
-        delay: i * 0.2
-      }
-    })
+        delay: i * 0.2,
+      },
+    }),
   };
 
   return (
@@ -43,4 +43,4 @@ const LoadingSpinner: React.FC = () => {
   );
 };
 
-export default LoadingSpinner; 
+export default LoadingSpinner;

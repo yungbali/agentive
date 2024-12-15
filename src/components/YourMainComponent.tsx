@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChatBubble } from "@copilotkit/react-ui";
+import { ChatBubble } from '@copilotkit/react-ui';
 import { motion } from 'framer-motion';
 
 export function YourMainComponent() {
@@ -12,12 +12,12 @@ export function YourMainComponent() {
       <ChatBubble
         messages={[
           {
-            role: "system",
-            content: "You are assisting the user as best as you can."
-          }
+            role: 'system',
+            content: 'You are assisting the user as best as you can.',
+          },
         ]}
         className="fixed bottom-4 right-4"
       />
     </motion.div>
   );
-} 
+}

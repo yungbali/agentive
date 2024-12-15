@@ -16,7 +16,7 @@ const AnimatedCard: React.FC<AnimatedCardProps> = ({ children, className = '' })
     const rect = event.currentTarget.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
-    
+
     x.set(event.clientX - centerX);
     y.set(event.clientY - centerY);
   };
@@ -34,20 +34,20 @@ const AnimatedCard: React.FC<AnimatedCardProps> = ({ children, className = '' })
       style={{
         rotateX,
         rotateY,
-        transformStyle: "preserve-3d"
+        transformStyle: 'preserve-3d',
       }}
       whileHover={{ scale: 1.02 }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{
-        type: "spring",
+        type: 'spring',
         stiffness: 300,
-        damping: 20
+        damping: 20,
       }}
     >
       <motion.div
         className="w-full h-full bg-white rounded-lg shadow-lg p-6"
-        style={{ transform: "translateZ(20px)" }}
+        style={{ transform: 'translateZ(20px)' }}
       >
         {children}
       </motion.div>
@@ -55,4 +55,4 @@ const AnimatedCard: React.FC<AnimatedCardProps> = ({ children, className = '' })
   );
 };
 
-export default AnimatedCard; 
+export default AnimatedCard;

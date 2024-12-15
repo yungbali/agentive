@@ -14,26 +14,26 @@ const errorVariants = {
   initial: {
     opacity: 0,
     y: -20,
-    scale: 0.95
+    scale: 0.95,
   },
   animate: {
     opacity: 1,
     y: 0,
     scale: 1,
     transition: {
-      type: "spring",
+      type: 'spring',
       stiffness: 300,
-      damping: 20
-    }
+      damping: 20,
+    },
   },
   exit: {
     opacity: 0,
     y: 20,
     scale: 0.95,
     transition: {
-      duration: 0.2
-    }
-  }
+      duration: 0.2,
+    },
+  },
 };
 
 export class ErrorBoundary extends React.Component<Props, State> {
@@ -45,7 +45,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
   static getDerivedStateFromError(error: Error): State {
     return {
       hasError: true,
-      error
+      error,
     };
   }
 
@@ -60,36 +60,40 @@ export class ErrorBoundary extends React.Component<Props, State> {
             animate="animate"
             exit="exit"
           >
-            <motion.div 
+            <motion.div
               className="p-4 bg-red-50 border border-red-200 rounded-lg shadow-lg"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              <motion.h2 
+              <motion.h2
                 className="text-red-800 font-bold mb-2 flex items-center"
                 initial={{ x: -20 }}
                 animate={{ x: 0 }}
               >
-                <motion.svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  className="h-5 w-5 mr-2" 
-                  viewBox="0 0 20 20" 
+                <motion.svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 mr-2"
+                  viewBox="0 0 20 20"
                   fill="currentColor"
-                  animate={{ 
+                  animate={{
                     rotate: [0, 10, -10, 0],
-                    scale: [1, 1.1, 1.1, 1]
+                    scale: [1, 1.1, 1.1, 1],
                   }}
                   transition={{
                     duration: 0.5,
                     repeat: Infinity,
-                    repeatDelay: 2
+                    repeatDelay: 2,
                   }}
                 >
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clipRule="evenodd"
+                  />
                 </motion.svg>
                 Something went wrong
               </motion.h2>
-              <motion.p 
+              <motion.p
                 className="text-red-600"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -113,4 +117,4 @@ export class ErrorBoundary extends React.Component<Props, State> {
 
     return this.props.children;
   }
-} 
+}

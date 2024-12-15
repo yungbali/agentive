@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
-import { Button } from "./ui/button";
+import { Button } from './ui/button';
 import { agentPrompts } from '../services/agentPrompts';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -37,7 +37,7 @@ export const AgentiveWorkflow: React.FC = () => {
     marketingBudget: '',
     distributionPlatforms: [] as string[],
   });
-  
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const workflowSteps: WorkflowStep[] = [
@@ -47,7 +47,7 @@ export const AgentiveWorkflow: React.FC = () => {
       description: 'Plan your music release across platforms',
       agent: 'Distribution Strategist',
       completed: false,
-      systemPrompt: agentPrompts.distribution.initial
+      systemPrompt: agentPrompts.distribution.initial,
     },
     {
       id: 'marketing',
@@ -55,7 +55,7 @@ export const AgentiveWorkflow: React.FC = () => {
       description: 'Create targeted marketing campaigns',
       agent: 'Marketing Director',
       completed: false,
-      systemPrompt: agentPrompts.marketing.initial
+      systemPrompt: agentPrompts.marketing.initial,
     },
     {
       id: 'playlist',
@@ -63,8 +63,8 @@ export const AgentiveWorkflow: React.FC = () => {
       description: 'Optimize playlist submission strategy',
       agent: 'Playlist Curator',
       completed: false,
-      systemPrompt: agentPrompts.playlist.initial
-    }
+      systemPrompt: agentPrompts.playlist.initial,
+    },
   ];
 
   useEffect(() => {
@@ -72,7 +72,7 @@ export const AgentiveWorkflow: React.FC = () => {
   }, [messages]);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const handleStepSelect = async (step: WorkflowStep) => {
@@ -82,9 +82,9 @@ export const AgentiveWorkflow: React.FC = () => {
       role: 'system',
       content: step.systemPrompt,
       timestamp: new Date(),
-      agentId: step.id
+      agentId: step.id,
     };
-    setMessages(prev => [...prev, systemMessage]);
+    setMessages((prev) => [...prev, systemMessage]);
   };
 
   const handleSubmit = async () => {
@@ -96,10 +96,10 @@ export const AgentiveWorkflow: React.FC = () => {
       role: 'user',
       content: input,
       timestamp: new Date(),
-      agentId: currentStep.id
+      agentId: currentStep.id,
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setInput('');
 
     try {
@@ -113,18 +113,18 @@ export const AgentiveWorkflow: React.FC = () => {
             {
               role: 'system',
               content: `You are a ${currentStep.agent} helping with music project strategy. 
-                       Current step: ${currentStep.title}`
+                       Current step: ${currentStep.title}`,
             },
-            ...messages.map(m => ({
+            ...messages.map((m) => ({
               role: m.role,
-              content: m.content
+              content: m.content,
             })),
             {
               role: 'user',
-              content: input
-            }
-          ]
-        })
+              content: input,
+            },
+          ],
+        }),
       });
 
       const reader = response.body?.getReader();
@@ -138,10 +138,10 @@ export const AgentiveWorkflow: React.FC = () => {
           content: '',
           timestamp: new Date(),
           agentId: currentStep.id,
-          status: 'thinking'
+          status: 'thinking',
         };
 
-        setMessages(prev => [...prev, assistantMessage]);
+        setMessages((prev) => [...prev, assistantMessage]);
 
         while (true) {
           const { done, value } = await reader.read();
@@ -158,12 +158,14 @@ export const AgentiveWorkflow: React.FC = () => {
               try {
                 const { content } = JSON.parse(jsonStr);
                 accumulatedResponse += content;
-                
-                setMessages(prev => prev.map(msg => 
-                  msg.id === assistantMessage.id 
-                    ? { ...msg, content: accumulatedResponse, status: 'complete' }
-                    : msg
-                ));
+
+                setMessages((prev) =>
+                  prev.map((msg) =>
+                    msg.id === assistantMessage.id
+                      ? { ...msg, content: accumulatedResponse, status: 'complete' }
+                      : msg
+                  )
+                );
               } catch (e) {
                 console.error('Error parsing JSON:', e);
               }
@@ -172,17 +174,20 @@ export const AgentiveWorkflow: React.FC = () => {
         }
 
         // Mark step as completed
-        setCurrentStep(prev => prev ? { ...prev, completed: true } : null);
+        setCurrentStep((prev) => (prev ? { ...prev, completed: true } : null));
       }
     } catch (error) {
       console.error('Error:', error);
-      setMessages(prev => [...prev, {
-        id: uuidv4(),
-        role: 'system',
-        content: 'An error occurred while processing your request. Please try again.',
-        timestamp: new Date(),
-        status: 'error'
-      }]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: uuidv4(),
+          role: 'system',
+          content: 'An error occurred while processing your request. Please try again.',
+          timestamp: new Date(),
+          status: 'error',
+        },
+      ]);
     } finally {
       setIsProcessing(false);
     }
@@ -199,8 +204,8 @@ export const AgentiveWorkflow: React.FC = () => {
               key={step.id}
               onClick={() => handleStepSelect(step)}
               className={`p-4 rounded-lg cursor-pointer ${
-                currentStep?.id === step.id 
-                  ? 'bg-blue-50 border-blue-200 border-2' 
+                currentStep?.id === step.id
+                  ? 'bg-blue-50 border-blue-200 border-2'
                   : 'bg-gray-50 hover:bg-gray-100'
               }`}
               whileHover={{ scale: 1.02 }}
@@ -209,7 +214,7 @@ export const AgentiveWorkflow: React.FC = () => {
               <h3 className="font-semibold flex items-center gap-2">
                 {step.title}
                 {step.completed && (
-                  <motion.span 
+                  <motion.span
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     className="text-green-500"
@@ -234,17 +239,15 @@ export const AgentiveWorkflow: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className={`flex ${
-                  message.role === 'user' ? 'justify-end' : 'justify-start'
-                }`}
+                className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
                   className={`max-w-[80%] rounded-lg p-4 ${
                     message.role === 'user'
                       ? 'bg-blue-500 text-white'
                       : message.role === 'system'
-                      ? 'bg-gray-100'
-                      : 'bg-white border'
+                        ? 'bg-gray-100'
+                        : 'bg-white border'
                   }`}
                 >
                   {message.status === 'thinking' ? (
@@ -277,9 +280,10 @@ export const AgentiveWorkflow: React.FC = () => {
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={currentStep 
-                ? `Discuss ${currentStep.title.toLowerCase()} with ${currentStep.agent}...` 
-                : "Select a workflow step to begin..."
+              placeholder={
+                currentStep
+                  ? `Discuss ${currentStep.title.toLowerCase()} with ${currentStep.agent}...`
+                  : 'Select a workflow step to begin...'
               }
               className="w-full p-4 rounded-lg border min-h-[100px] focus:ring-2 focus:ring-blue-500"
               disabled={isProcessing || !currentStep}

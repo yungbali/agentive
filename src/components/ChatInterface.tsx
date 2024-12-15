@@ -17,13 +17,13 @@ interface ChatInterfaceProps {
 export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   messages,
   onSendMessage,
-  isLoading = false
+  isLoading = false,
 }) => {
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   useEffect(() => {
@@ -38,20 +38,14 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
             key={index}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`flex ${
-              message.role === 'user' ? 'justify-end' : 'justify-start'
-            }`}
+            className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             <div
               className={`max-w-[80%] rounded-lg p-4 ${
-                message.role === 'user'
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-100'
+                message.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-100'
               }`}
             >
-              <ReactMarkdown className="prose">
-                {message.content}
-              </ReactMarkdown>
+              <ReactMarkdown className="prose">{message.content}</ReactMarkdown>
             </div>
           </motion.div>
         ))}
@@ -90,4 +84,4 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
       </div>
     </div>
   );
-}; 
+};

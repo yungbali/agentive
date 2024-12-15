@@ -7,7 +7,7 @@ if (!process.env.OPENAI_API_KEY) {
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-  baseURL: 'https://api.openai.com/v1' // Explicitly set the base URL
+  baseURL: 'https://api.openai.com/v1', // Explicitly set the base URL
 });
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo", // Fallback to 3.5 if GPT-4 access isn't available
+      model: 'gpt-3.5-turbo', // Fallback to 3.5 if GPT-4 access isn't available
       messages,
       stream: true,
       temperature: 0.7,
@@ -34,8 +34,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.writeHead(200, {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache, no-transform',
-      'Connection': 'keep-alive',
-      'X-Accel-Buffering': 'no'
+      Connection: 'keep-alive',
+      'X-Accel-Buffering': 'no',
     });
 
     for await (const chunk of response) {
@@ -50,12 +50,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.end();
   } catch (error: any) {
     console.error('API Error:', error);
-    
+
     // Send a more detailed error response
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Error generating response',
       details: error.message,
-      code: error.code
+      code: error.code,
     });
   }
-} 
+}

@@ -1,4 +1,4 @@
-import { CopilotKit } from "@copilotkit/react-core";
+import { CopilotKit } from '@copilotkit/react-core';
 
 interface MusicProject {
   artistName: string;
@@ -26,11 +26,11 @@ export class MusicLabelAgent {
         body: JSON.stringify({
           messages: [
             {
-              role: "system",
-              content: "You are a music industry expert helping to create distribution strategies."
+              role: 'system',
+              content: 'You are a music industry expert helping to create distribution strategies.',
             },
             {
-              role: "user",
+              role: 'user',
               content: `Create a detailed distribution strategy for:
                 Artist: ${project.artistName}
                 Track: ${project.trackTitle}
@@ -45,14 +45,14 @@ export class MusicLabelAgent {
                 3. Platform-specific strategy
                 4. Marketing recommendations
                 5. Key performance indicators
-              `
-            }
-          ]
-        })
+              `,
+            },
+          ],
+        }),
       });
 
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.details || data.error || 'Failed to generate strategy');
       }
@@ -62,10 +62,11 @@ export class MusicLabelAgent {
       }
 
       return data.response;
-
     } catch (error) {
       console.error('Strategy generation error:', error);
-      throw new Error(error instanceof Error ? error.message : 'Failed to generate distribution strategy');
+      throw new Error(
+        error instanceof Error ? error.message : 'Failed to generate distribution strategy'
+      );
     }
   }
-} 
+}
