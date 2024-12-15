@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import { MusicLabelAgent } from '../agents/MusicLabelAgent';
 import StrategyDisplay from './StrategyDisplay';
 
@@ -82,11 +81,8 @@ const MusicLabelDashboard: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 min-h-screen">
-      <motion.div
+      <div
         className="grid md:grid-cols-[1fr,1.5fr] gap-8"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
       >
         {/* Input Form Section */}
         <div className="bg-white/80 backdrop-blur-sm shadow-xl rounded-[25px] p-6 md:p-8 h-fit">
@@ -190,7 +186,7 @@ const MusicLabelDashboard: React.FC = () => {
             isStreaming={isStreaming} 
           />
         )}
-      </motion.div>
+      </div>
     </div>
   );
 };
