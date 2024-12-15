@@ -1,15 +1,10 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import AnimatedHeader from './AnimatedHeader';
-import AnimatedCard from './AnimatedCard';
-import AnimatedButton from './AnimatedButton';
 import LoadingSpinner from './LoadingSpinner';
 import MusicLabelChat from './MusicLabelChat';
 import StrategyDisplay from './StrategyDisplay';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { MusicLabelAgent } from '../agents/MusicLabelAgent';
 
 interface Project {
   artistName: string;
@@ -22,7 +17,7 @@ interface Project {
 
 const platforms = ['Spotify', 'Apple Music', 'YouTube Music', 'Amazon Music', 'TikTok'];
 
-const formVariants = {
+const _formVariants = {
   hover: {
     boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.1)',
     transition: {
@@ -33,105 +28,54 @@ const formVariants = {
   },
 };
 
-const inputVariants = {
-  focus: {
-    scale: 1.02,
-    transition: {
-      type: 'spring',
-      stiffness: 300,
-      damping: 20,
-    },
-  },
-};
+const _error = null;
 
 const MusicLabelDashboard: React.FC = () => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [strategy, setStrategy] = useState<string>('');
-  const [partialStrategy, setPartialStrategy] = useState<string>('');
   const [project, setProject] = useState<Project>({
     artistName: '',
     trackTitle: '',
     genre: '',
-    releaseDate: new Date().toISOString().split('T')[0],
+    releaseDate: '',
     marketingBudget: 0,
-    distributionPlatforms: [],
+    distributionPlatforms: []
   });
+  const [strategy, setStrategy] = useState<string>('');
+  const [partialStrategy, setPartialStrategy] = useState<string>('');
+  const agent = new MusicLabelAgent();
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setProject(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
 
     try {
-      if (!project.artistName || !project.trackTitle || !project.genre) {
-        throw new Error('Please fill in all required fields');
-      }
-
-      const prompt = `Create a detailed distribution strategy for:
-        Artist: ${project.artistName}
-        Track: ${project.trackTitle}
-        Genre: ${project.genre}
-        Release Date: ${project.releaseDate}
-        Marketing Budget: $${project.marketingBudget}
-        Platforms: ${project.distributionPlatforms.join(', ')}
-
-        Please include:
-        1. Timeline for release
-        2. Budget allocation
-        3. Platform-specific strategy
-        4. Marketing recommendations
-        5. Key performance indicators
-      `;
-
-      const response = await fetch('/api/copilot', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          messages: [
-            {
-              role: 'system',
-              content: 'You are a music industry expert helping to create distribution strategies.',
-            },
-            { role: 'user', content: prompt },
-          ],
-        }),
-      });
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let accumulatedStrategy = '';
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        const chunk = decoder.decode(value);
-        const lines = chunk.split('\n');
-
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            const jsonStr = line.slice(6);
-            try {
-              const { content } = JSON.parse(jsonStr);
-              accumulatedStrategy += content;
-              setPartialStrategy(accumulatedStrategy);
-            } catch (e) {
-              // Skip malformed JSON
-              continue;
-            }
-          }
-        }
-      }
-
-      setStrategy(accumulatedStrategy);
-    } catch (err) {
-      console.error('Error:', err);
-      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+      const result = await agent.planDistributionStrategy(project);
+      setStrategy(result);
+    } catch (error) {
+      console.error('Error generating strategy:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handlePlatformChange = async (platform: string) => {
+    try {
+      setProject(prev => ({
+        ...prev,
+        distributionPlatforms: prev.distributionPlatforms.includes(platform)
+          ? prev.distributionPlatforms.filter(p => p !== platform)
+          : [...prev.distributionPlatforms, platform]
+      }));
+    } catch (error) {
+      console.error('Error updating platforms:', error);
     }
   };
 
@@ -145,13 +89,14 @@ const MusicLabelDashboard: React.FC = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               <h2 className="text-xl font-semibold mb-4">New Release Project</h2>
 
-              <motion.div className="space-y-4" variants={inputVariants} whileFocus="focus">
+              <motion.div className="space-y-4" variants={_formVariants} whileFocus="focus">
                 <div>
                   <label className="block text-sm font-medium mb-1">Artist Name</label>
                   <motion.input
                     type="text"
+                    name="artistName"
                     value={project.artistName}
-                    onChange={(e) => setProject({ ...project, artistName: e.target.value })}
+                    onChange={handleInputChange}
                     className="w-full p-3 border rounded-[15px] bg-[#EBEFF1] focus:ring-2 focus:ring-blue-500"
                     whileFocus="focus"
                   />
@@ -161,8 +106,9 @@ const MusicLabelDashboard: React.FC = () => {
                   <label className="block text-sm font-medium mb-1">Track Title</label>
                   <motion.input
                     type="text"
+                    name="trackTitle"
                     value={project.trackTitle}
-                    onChange={(e) => setProject({ ...project, trackTitle: e.target.value })}
+                    onChange={handleInputChange}
                     className="w-full p-3 border rounded-[15px] bg-[#EBEFF1] focus:ring-2 focus:ring-blue-500"
                     whileFocus="focus"
                   />
@@ -171,8 +117,9 @@ const MusicLabelDashboard: React.FC = () => {
                 <div>
                   <label className="block text-sm font-medium mb-1">Genre</label>
                   <motion.select
+                    name="genre"
                     value={project.genre}
-                    onChange={(e) => setProject({ ...project, genre: e.target.value })}
+                    onChange={handleInputChange}
                     className="w-full p-3 border rounded-[15px] bg-[#EBEFF1] focus:ring-2 focus:ring-blue-500"
                     whileFocus="focus"
                   >
@@ -188,10 +135,9 @@ const MusicLabelDashboard: React.FC = () => {
                   <label className="block text-sm font-medium mb-1">Marketing Budget</label>
                   <motion.input
                     type="number"
+                    name="marketingBudget"
                     value={project.marketingBudget}
-                    onChange={(e) =>
-                      setProject({ ...project, marketingBudget: Number(e.target.value) })
-                    }
+                    onChange={handleInputChange}
                     className="w-full p-3 border rounded-[15px] bg-[#EBEFF1] focus:ring-2 focus:ring-blue-500"
                     whileFocus="focus"
                   />
@@ -210,12 +156,7 @@ const MusicLabelDashboard: React.FC = () => {
                         <input
                           type="checkbox"
                           checked={project.distributionPlatforms.includes(platform)}
-                          onChange={(e) => {
-                            const updatedPlatforms = e.target.checked
-                              ? [...project.distributionPlatforms, platform]
-                              : project.distributionPlatforms.filter((p) => p !== platform);
-                            setProject({ ...project, distributionPlatforms: updatedPlatforms });
-                          }}
+                          onChange={() => handlePlatformChange(platform)}
                           className="mr-2"
                         />
                         <span className="text-sm">{platform}</span>

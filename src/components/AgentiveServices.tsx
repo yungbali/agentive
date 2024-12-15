@@ -9,12 +9,21 @@ interface Message {
   agentId?: string;
 }
 
+interface Project {
+  artistName: string;
+  trackTitle: string;
+  genre: string;
+  releaseDate: string;
+  marketingBudget: number;
+  distributionPlatforms: string[];
+}
+
 interface Agent {
-  id: 'distribution' | 'marketing' | 'playlist';
+  id: string;
   name: string;
   role: string;
-  expertise: string[];
   avatar: string;
+  expertise: string[];
 }
 
 const agents: Agent[] = [
@@ -45,15 +54,7 @@ export const AgentiveServices: React.FC = () => {
   const [activeAgent, setActiveAgent] = useState<Agent | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
-  const [project, setProject] = useState({
-    artistName: '',
-    genre: '',
-    markets: [],
-    goals: '',
-    budget: '',
-    timeline: '',
-    targetPlaylists: [],
-  });
+  const [_project, _setProject] = useState<Project | null>(null);
 
   const handleAgentSelect = (agent: Agent) => {
     setActiveAgent(agent);

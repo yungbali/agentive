@@ -30,13 +30,7 @@ export const AgentiveWorkflow: React.FC = () => {
   const [input, setInput] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [currentStep, setCurrentStep] = useState<WorkflowStep | null>(null);
-  const [project, setProject] = useState({
-    artistName: '',
-    trackTitle: '',
-    genre: '',
-    marketingBudget: '',
-    distributionPlatforms: [] as string[],
-  });
+  const [project, setProject] = useState<any | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
