@@ -41,7 +41,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     for await (const chunk of response) {
       const content = chunk.choices[0]?.delta?.content || '';
       if (content) {
-        res.write(`data: ${JSON.stringify({ content })}\n\n`);
+        const data = JSON.stringify({ content });
+        res.write(`data: ${data}\n\n`);
       }
     }
 

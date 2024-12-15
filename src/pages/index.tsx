@@ -1,7 +1,11 @@
 // pages/index.tsx
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { motion, Variants } from "framer-motion";
+import { AgentiveServices } from '../components/AgentiveServices';
+import { AgentiveWorkflow } from '../components/AgentiveWorkflow';
 
 const MusicLabelDashboard = dynamic(
   () => import('../components/MusicLabelDashboard'),
@@ -72,6 +76,7 @@ export default function Home() {
         transition={{ delay: 0.2 }}
       >
         <MusicLabelDashboard />
+        <AgentiveWorkflow />
       </motion.div>
     </motion.div>
   );

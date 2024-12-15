@@ -70,21 +70,45 @@ const MusicLabelDashboard: React.FC = () => {
         throw new Error('Please fill in all required fields');
       }
 
-      const prompt = `Create a detailed distribution strategy for:
-        Artist: ${project.artistName}
-        Track: ${project.trackTitle}
-        Genre: ${project.genre}
-        Release Date: ${project.releaseDate}
-        Marketing Budget: $${project.marketingBudget}
-        Platforms: ${project.distributionPlatforms.join(', ')}
+      const prompt = `
+Context:
+You are a senior music industry strategist with extensive experience in digital distribution and marketing. You're creating a strategy for:
+Artist: ${project.artistName}
+Track: ${project.trackTitle}
+Genre: ${project.genre}
+Target Audience: Young, digitally-savvy music consumers
+Platforms: ${project.distributionPlatforms.join(', ')}
 
-        Please include:
-        1. Timeline for release
-        2. Budget allocation
-        3. Platform-specific strategy
-        4. Marketing recommendations
-        5. Key performance indicators
-      `;
+Ask:
+Create a detailed, actionable distribution strategy following these steps:
+1. Analyze the genre and artist positioning
+2. Develop platform-specific release strategies
+3. Create a marketing timeline
+4. Allocate the marketing budget
+5. Define success metrics
+
+Rules:
+- Focus on practical, actionable steps
+- Include specific platform features and best practices
+- Keep recommendations within the $${project.marketingBudget} budget
+- Prioritize strategies with proven ROI
+- Include specific dates and milestones
+- Maximum 2000 words
+- Use bullet points for clarity
+
+Examples:
+Good strategy example:
+• Release single on Spotify with pre-save campaign 2 weeks before launch
+• Allocate $500 for targeted Instagram ads in week 1
+• Target 10,000 streams in first month
+
+Please structure the response as:
+1. Executive Summary
+2. Platform Strategy
+3. Timeline
+4. Budget Allocation
+5. KPIs
+`;
 
       const response = await fetch('/api/copilot', {
         method: 'POST',
@@ -99,17 +123,33 @@ const MusicLabelDashboard: React.FC = () => {
         })
       });
 
-      const data = await response.json();
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let accumulatedStrategy = '';
 
-      if (!response.ok) {
-        throw new Error(data.error || data.details || 'Failed to generate strategy');
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        
+        const chunk = decoder.decode(value);
+        const lines = chunk.split('\n');
+        
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const jsonStr = line.slice(6);
+            try {
+              const { content } = JSON.parse(jsonStr);
+              accumulatedStrategy += content;
+              setPartialStrategy(accumulatedStrategy);
+            } catch (e) {
+              // Skip malformed JSON
+              continue;
+            }
+          }
+        }
       }
 
-      if (!data.response) {
-        throw new Error('No strategy was generated');
-      }
-
-      setStrategy(data.response);
+      setStrategy(accumulatedStrategy);
     } catch (err) {
       console.error('Error:', err);
       setError(err instanceof Error ? err.message : 'An unexpected error occurred');

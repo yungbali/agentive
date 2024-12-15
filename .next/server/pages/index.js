@@ -23,6 +23,17 @@ eval("__webpack_require__.a(module, async (__webpack_handle_async_dependencies__
 
 /***/ }),
 
+/***/ "./src/components/AgentiveWorkflow.tsx":
+/*!*********************************************!*\
+  !*** ./src/components/AgentiveWorkflow.tsx ***!
+  \*********************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {\n__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   AgentiveWorkflow: () => (/* binding */ AgentiveWorkflow)\n/* harmony export */ });\n/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-dev-runtime */ \"react/jsx-dev-runtime\");\n/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ \"react\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var framer_motion__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! framer-motion */ \"framer-motion\");\n/* harmony import */ var react_markdown__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-markdown */ \"react-markdown\");\n/* harmony import */ var _ui_button__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./ui/button */ \"./src/components/ui/button.tsx\");\n/* harmony import */ var _services_agentPrompts__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../services/agentPrompts */ \"./src/services/agentPrompts.ts\");\n/* harmony import */ var uuid__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! uuid */ \"uuid\");\nvar __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([framer_motion__WEBPACK_IMPORTED_MODULE_2__, react_markdown__WEBPACK_IMPORTED_MODULE_3__, _ui_button__WEBPACK_IMPORTED_MODULE_4__, uuid__WEBPACK_IMPORTED_MODULE_6__]);\n([framer_motion__WEBPACK_IMPORTED_MODULE_2__, react_markdown__WEBPACK_IMPORTED_MODULE_3__, _ui_button__WEBPACK_IMPORTED_MODULE_4__, uuid__WEBPACK_IMPORTED_MODULE_6__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);\n/* __next_internal_client_entry_do_not_use__ AgentiveWorkflow auto */ \n\n\n\n\n\n\nconst AgentiveWorkflow = ()=>{\n    const [messages, setMessages] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);\n    const [input, setInput] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)('');\n    const [isProcessing, setIsProcessing] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);\n    const [currentStep, setCurrentStep] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(null);\n    const [project, setProject] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)({\n        artistName: '',\n        trackTitle: '',\n        genre: '',\n        marketingBudget: '',\n        distributionPlatforms: []\n    });\n    const messagesEndRef = (0,react__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);\n    const workflowSteps = [\n        {\n            id: 'distribution',\n            title: 'Distribution Strategy',\n            description: 'Plan your music release across platforms',\n            agent: 'Distribution Strategist',\n            completed: false,\n            systemPrompt: _services_agentPrompts__WEBPACK_IMPORTED_MODULE_5__.agentPrompts.distribution.initial\n        },\n        {\n            id: 'marketing',\n            title: 'Marketing Campaign',\n            description: 'Create targeted marketing campaigns',\n            agent: 'Marketing Director',\n            completed: false,\n            systemPrompt: _services_agentPrompts__WEBPACK_IMPORTED_MODULE_5__.agentPrompts.marketing.initial\n        },\n        {\n            id: 'playlist',\n            title: 'Playlist Strategy',\n            description: 'Optimize playlist submission strategy',\n            agent: 'Playlist Curator',\n            completed: false,\n            systemPrompt: _services_agentPrompts__WEBPACK_IMPORTED_MODULE_5__.agentPrompts.playlist.initial\n        }\n    ];\n    (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)({\n        \"AgentiveWorkflow.useEffect\": ()=>{\n            scrollToBottom();\n        }\n    }[\"AgentiveWorkflow.useEffect\"], [\n        messages\n    ]);\n    const scrollToBottom = ()=>{\n        messagesEndRef.current?.scrollIntoView({\n            behavior: \"smooth\"\n        });\n    };\n    const handleStepSelect = async (step)=>{\n        setCurrentStep(step);\n        const systemMessage = {\n            id: (0,uuid__WEBPACK_IMPORTED_MODULE_6__.v4)(),\n            role: 'system',\n            content: step.systemPrompt,\n            timestamp: new Date(),\n            agentId: step.id\n        };\n        setMessages((prev)=>[\n                ...prev,\n                systemMessage\n            ]);\n    };\n    const handleSubmit = async ()=>{\n        if (!input.trim() || !currentStep) return;\n        setIsProcessing(true);\n        const userMessage = {\n            id: (0,uuid__WEBPACK_IMPORTED_MODULE_6__.v4)(),\n            role: 'user',\n            content: input,\n            timestamp: new Date(),\n            agentId: currentStep.id\n        };\n        setMessages((prev)=>[\n                ...prev,\n                userMessage\n            ]);\n        setInput('');\n        try {\n            const response = await fetch('/api/copilot', {\n                method: 'POST',\n                headers: {\n                    'Content-Type': 'application/json'\n                },\n                body: JSON.stringify({\n                    messages: [\n                        {\n                            role: 'system',\n                            content: `You are a ${currentStep.agent} helping with music project strategy. \n                       Current step: ${currentStep.title}`\n                        },\n                        ...messages.map((m)=>({\n                                role: m.role,\n                                content: m.content\n                            })),\n                        {\n                            role: 'user',\n                            content: input\n                        }\n                    ]\n                })\n            });\n            const reader = response.body?.getReader();\n            const decoder = new TextDecoder();\n            let accumulatedResponse = '';\n            if (reader) {\n                const assistantMessage = {\n                    id: (0,uuid__WEBPACK_IMPORTED_MODULE_6__.v4)(),\n                    role: 'assistant',\n                    content: '',\n                    timestamp: new Date(),\n                    agentId: currentStep.id,\n                    status: 'thinking'\n                };\n                setMessages((prev)=>[\n                        ...prev,\n                        assistantMessage\n                    ]);\n                while(true){\n                    const { done, value } = await reader.read();\n                    if (done) break;\n                    const chunk = decoder.decode(value);\n                    const lines = chunk.split('\\n');\n                    for (const line of lines){\n                        if (line.startsWith('data: ')) {\n                            const jsonStr = line.slice(6);\n                            if (jsonStr === '[DONE]') continue;\n                            try {\n                                const { content } = JSON.parse(jsonStr);\n                                accumulatedResponse += content;\n                                setMessages((prev)=>prev.map((msg)=>msg.id === assistantMessage.id ? {\n                                            ...msg,\n                                            content: accumulatedResponse,\n                                            status: 'complete'\n                                        } : msg));\n                            } catch (e) {\n                                console.error('Error parsing JSON:', e);\n                            }\n                        }\n                    }\n                }\n                // Mark step as completed\n                setCurrentStep((prev)=>prev ? {\n                        ...prev,\n                        completed: true\n                    } : null);\n            }\n        } catch (error) {\n            console.error('Error:', error);\n            setMessages((prev)=>[\n                    ...prev,\n                    {\n                        id: (0,uuid__WEBPACK_IMPORTED_MODULE_6__.v4)(),\n                        role: 'system',\n                        content: 'An error occurred while processing your request. Please try again.',\n                        timestamp: new Date(),\n                        status: 'error'\n                    }\n                ]);\n        } finally{\n            setIsProcessing(false);\n        }\n    };\n    return /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n        className: \"flex h-screen bg-gray-50\",\n        children: [\n            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                className: \"w-80 border-r bg-white p-4 overflow-y-auto\",\n                children: [\n                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"h2\", {\n                        className: \"text-xl font-bold mb-4\",\n                        children: \"Music Project Workflow\"\n                    }, void 0, false, {\n                        fileName: \"/Users/afromusedigital/agentive/src/components/AgentiveWorkflow.tsx\",\n                        lineNumber: 195,\n                        columnNumber: 9\n                    }, undefined),\n                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                        className: \"space-y-2\",\n                        children: workflowSteps.map((step)=>/*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(framer_motion__WEBPACK_IMPORTED_MODULE_2__.motion.div, {\n                                onClick: ()=>handleStepSelect(step),\n                                className: `p-4 rounded-lg cursor-pointer ${currentStep?.id === step.id ? 'bg-blue-50 border-blue-200 border-2' : 'bg-gray-50 hover:bg-gray-100'}`,\n                                whileHover: {\n                                    scale: 1.02\n                                },\n                                whileTap: {\n                                    scale: 0.98\n                                },\n                                children: [\n                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"h3\", {\n                                        className: \"font-semibold flex items-center gap-2\",\n                                        children: [\n                                            step.title,\n                                            step.completed && /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(framer_motion__WEBPACK_IMPORTED_MODULE_2__.motion.span, {\n                                                initial: {\n                                                    scale: 0\n                                                },\n                                                animate: {\n                                                    scale: 1\n                                                },\n                                                className: \"text-green-500\",\n                                                children: \"✓\"\n                                            }, void 0, false, {\n                                                fileName: \"/Users/afromusedigital/agentive/src/components/AgentiveWorkflow.tsx\",\n                                                lineNumber: 212,\n                                                columnNumber: 19\n                                            }, undefined)\n                                        ]\n                                    }, void 0, true, {\n                                        fileName: \"/Users/afromusedigital/agentive/src/components/AgentiveWorkflow.tsx\",\n                                        lineNumber: 209,\n                                        columnNumber: 15\n                                    }, undefined),\n                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"p\", {\n                                        className: \"text-sm text-gray-600\",\n                                        children: step.description\n                                    }, void 0, false, {\n                                        fileName: \"/Users/afromusedigital/agentive/src/components/AgentiveWorkflow.tsx\",\n                                        lineNumber: 221,\n                                        columnNumber: 15\n                                    }, undefined)\n                                ]\n                            }, step.id, true, {\n                                fileName: \"/Users/afromusedigital/agentive/src/components/AgentiveWorkflow.tsx\",\n                                lineNumber: 198,\n                                columnNumber: 13\n                            }, undefined))\n                    }, void 0, false, {\n                        fileName: \"/Users/afromusedigital/agentive/src/components/AgentiveWorkflow.tsx\",\n                        lineNumber: 196,\n                        columnNumber: 9\n                    }, undefined)\n                ]\n            }, void 0, true, {\n                fileName: \"/Users/afromusedigital/agentive/src/components/AgentiveWorkflow.tsx\",\n                lineNumber: 194,\n                columnNumber: 7\n            }, undefined),\n            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                className: \"flex-1 flex flex-col\",\n                children: [\n                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                        className: \"flex-1 overflow-y-auto p-6 space-y-4\",\n                        children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(framer_motion__WEBPACK_IMPORTED_MODULE_2__.AnimatePresence, {\n                            children: [\n                                messages.map((message)=>/*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(framer_motion__WEBPACK_IMPORTED_MODULE_2__.motion.div, {\n                                        initial: {\n                                            opacity: 0,\n                                            y: 20\n                                        },\n                                        animate: {\n                                            opacity: 1,\n                                            y: 0\n                                        },\n                                        exit: {\n                                            opacity: 0,\n                                            y: -20\n                                        },\n                                        className: `flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`,\n                                        children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                                            className: `max-w-[80%] rounded-lg p-4 ${message.role === 'user' ? 'bg-blue-500 text-white' : message.role === 'system' ? 'bg-gray-100' : 'bg-white border'}`,\n                                            children: [\n                                                message.status === 'thinking' ? /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                                                    className: \"flex items-center gap-2\",\n                                                    children: [\n                                                        /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(framer_motion__WEBPACK_IMPORTED_MODULE_2__.motion.div, {\n                                                            animate: {\n                                                                rotate: 360\n                                                            },\n                                                            transition: {\n                                                                duration: 1,\n                                                                repeat: Infinity\n                                                            },\n                                                            className: \"w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full\"\n                                                        }, void 0, false, {\n                                                            fileName: \"/Users/afromusedigital/agentive/src/components/AgentiveWorkflow.tsx\",\n                                                            lineNumber: 252,\n                                                            columnNumber: 23\n                                                        }, undefined),\n                                                        \"Thinking...\"\n                                                    ]\n                                                }, void 0, true, {\n                                                    fileName: \"/Users/afromusedigital/agentive/src/components/AgentiveWorkflow.tsx\",\n                                                    lineNumber: 251,\n                                                    columnNumber: 21\n                                                }, undefined) : /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(react_markdown__WEBPACK_IMPORTED_MODULE_3__[\"default\"], {\n                                                    className: \"prose max-w-none dark:prose-invert\",\n                                                    children: message.content\n                                                }, void 0, false, {\n                                                    fileName: \"/Users/afromusedigital/agentive/src/components/AgentiveWorkflow.tsx\",\n                                                    lineNumber: 260,\n                                                    columnNumber: 21\n                                                }, undefined),\n                                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                                                    className: \"text-xs opacity-50 mt-2\",\n                                                    children: message.timestamp.toLocaleTimeString()\n                                                }, void 0, false, {\n                                                    fileName: \"/Users/afromusedigital/agentive/src/components/AgentiveWorkflow.tsx\",\n                                                    lineNumber: 264,\n                                                    columnNumber: 19\n                                                }, undefined)\n                                            ]\n                                        }, void 0, true, {\n                                            fileName: \"/Users/afromusedigital/agentive/src/components/AgentiveWorkflow.tsx\",\n                                            lineNumber: 241,\n                                            columnNumber: 17\n                                        }, undefined)\n                                    }, message.id, false, {\n                                        fileName: \"/Users/afromusedigital/agentive/src/components/AgentiveWorkflow.tsx\",\n                                        lineNumber: 232,\n                                        columnNumber: 15\n                                    }, undefined)),\n                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                                    ref: messagesEndRef\n                                }, void 0, false, {\n                                    fileName: \"/Users/afromusedigital/agentive/src/components/AgentiveWorkflow.tsx\",\n                                    lineNumber: 270,\n                                    columnNumber: 13\n                                }, undefined)\n                            ]\n                        }, void 0, true, {\n                            fileName: \"/Users/afromusedigital/agentive/src/components/AgentiveWorkflow.tsx\",\n                            lineNumber: 230,\n                            columnNumber: 11\n                        }, undefined)\n                    }, void 0, false, {\n                        fileName: \"/Users/afromusedigital/agentive/src/components/AgentiveWorkflow.tsx\",\n                        lineNumber: 229,\n                        columnNumber: 9\n                    }, undefined),\n                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                        className: \"border-t bg-white p-4\",\n                        children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                            className: \"max-w-4xl mx-auto\",\n                            children: [\n                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"textarea\", {\n                                    value: input,\n                                    onChange: (e)=>setInput(e.target.value),\n                                    placeholder: currentStep ? `Discuss ${currentStep.title.toLowerCase()} with ${currentStep.agent}...` : \"Select a workflow step to begin...\",\n                                    className: \"w-full p-4 rounded-lg border min-h-[100px] focus:ring-2 focus:ring-blue-500\",\n                                    disabled: isProcessing || !currentStep\n                                }, void 0, false, {\n                                    fileName: \"/Users/afromusedigital/agentive/src/components/AgentiveWorkflow.tsx\",\n                                    lineNumber: 277,\n                                    columnNumber: 13\n                                }, undefined),\n                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                                    className: \"flex justify-between mt-2\",\n                                    children: [\n                                        /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_ui_button__WEBPACK_IMPORTED_MODULE_4__.Button, {\n                                            variant: \"outline\",\n                                            onClick: ()=>setInput(''),\n                                            disabled: isProcessing || !input,\n                                            children: \"Clear\"\n                                        }, void 0, false, {\n                                            fileName: \"/Users/afromusedigital/agentive/src/components/AgentiveWorkflow.tsx\",\n                                            lineNumber: 288,\n                                            columnNumber: 15\n                                        }, undefined),\n                                        /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_ui_button__WEBPACK_IMPORTED_MODULE_4__.Button, {\n                                            onClick: handleSubmit,\n                                            disabled: isProcessing || !input || !currentStep,\n                                            className: \"bg-blue-500 text-white\",\n                                            children: isProcessing ? 'Processing...' : 'Send Message'\n                                        }, void 0, false, {\n                                            fileName: \"/Users/afromusedigital/agentive/src/components/AgentiveWorkflow.tsx\",\n                                            lineNumber: 295,\n                                            columnNumber: 15\n                                        }, undefined)\n                                    ]\n                                }, void 0, true, {\n                                    fileName: \"/Users/afromusedigital/agentive/src/components/AgentiveWorkflow.tsx\",\n                                    lineNumber: 287,\n                                    columnNumber: 13\n                                }, undefined)\n                            ]\n                        }, void 0, true, {\n                            fileName: \"/Users/afromusedigital/agentive/src/components/AgentiveWorkflow.tsx\",\n                            lineNumber: 276,\n                            columnNumber: 11\n                        }, undefined)\n                    }, void 0, false, {\n                        fileName: \"/Users/afromusedigital/agentive/src/components/AgentiveWorkflow.tsx\",\n                        lineNumber: 275,\n                        columnNumber: 9\n                    }, undefined)\n                ]\n            }, void 0, true, {\n                fileName: \"/Users/afromusedigital/agentive/src/components/AgentiveWorkflow.tsx\",\n                lineNumber: 228,\n                columnNumber: 7\n            }, undefined)\n        ]\n    }, void 0, true, {\n        fileName: \"/Users/afromusedigital/agentive/src/components/AgentiveWorkflow.tsx\",\n        lineNumber: 192,\n        columnNumber: 5\n    }, undefined);\n};\n\n__webpack_async_result__();\n} catch(e) { __webpack_async_result__(e); } });//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,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OzRCQUFJQyxXQUFVOzs4Q0FDYiw4REFBQ3FCO29DQUNDckMsT0FBTzFEO29DQUNQZ0csVUFBVSxDQUFDMUIsSUFBTXJFLFNBQVNxRSxFQUFFMkIsTUFBTSxDQUFDdkMsS0FBSztvQ0FDeEN3QyxhQUFhOUYsY0FDVCxDQUFDLFFBQVEsRUFBRUEsWUFBWVksS0FBSyxDQUFDbUYsV0FBVyxHQUFHLE1BQU0sRUFBRS9GLFlBQVljLEtBQUssQ0FBQyxHQUFHLENBQUMsR0FDekU7b0NBRUp3RCxXQUFVO29DQUNWMEIsVUFBVWxHLGdCQUFnQixDQUFDRTs7Ozs7OzhDQUU3Qiw4REFBQ3FFO29DQUFJQyxXQUFVOztzREFDYiw4REFBQ2pGLDhDQUFNQTs0Q0FDTDRHLFNBQVE7NENBQ1J6QixTQUFTLElBQU0zRSxTQUFTOzRDQUN4Qm1HLFVBQVVsRyxnQkFBZ0IsQ0FBQ0Y7c0RBQzVCOzs7Ozs7c0RBR0QsOERBQUNQLDhDQUFNQTs0Q0FDTG1GLFNBQVN0Qzs0Q0FDVDhELFVBQVVsRyxnQkFBZ0IsQ0FBQ0YsU0FBUyxDQUFDSTs0Q0FDckNzRSxXQUFVO3NEQUVUeEUsZUFBZSxrQkFBa0I7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0FBUWxELEVBQUUiLCJzb3VyY2VzIjpbIi9Vc2Vycy9hZnJvbXVzZWRpZ2l0YWwvYWdlbnRpdmUvc3JjL2NvbXBvbmVudHMvQWdlbnRpdmVXb3JrZmxvdy50c3giXSwic291cmNlc0NvbnRlbnQiOlsiJ3VzZSBjbGllbnQnO1xuXG5pbXBvcnQgUmVhY3QsIHsgdXNlU3RhdGUsIHVzZVJlZiwgdXNlRWZmZWN0IH0gZnJvbSAncmVhY3QnO1xuaW1wb3J0IHsgbW90aW9uLCBBbmltYXRlUHJlc2VuY2UgfSBmcm9tICdmcmFtZXItbW90aW9uJztcbmltcG9ydCBSZWFjdE1hcmtkb3duIGZyb20gJ3JlYWN0LW1hcmtkb3duJztcbmltcG9ydCB7IEJ1dHRvbiB9IGZyb20gXCIuL3VpL2J1dHRvblwiO1xuaW1wb3J0IHsgYWdlbnRQcm9tcHRzIH0gZnJvbSAnLi4vc2VydmljZXMvYWdlbnRQcm9tcHRzJztcbmltcG9ydCB7IHY0IGFzIHV1aWR2NCB9IGZyb20gJ3V1aWQnO1xuXG5pbnRlcmZhY2UgV29ya2Zsb3dNZXNzYWdlIHtcbiAgaWQ6IHN0cmluZztcbiAgcm9sZTogJ3N5c3RlbScgfCAndXNlcicgfCAnYXNzaXN0YW50JyB8ICd3b3JrZmxvdyc7XG4gIGNvbnRlbnQ6IHN0cmluZztcbiAgYWdlbnRJZD86IHN0cmluZztcbiAgdGltZXN0YW1wOiBEYXRlO1xuICBzdGF0dXM/OiAndGhpbmtpbmcnIHwgJ2NvbXBsZXRlJyB8ICdlcnJvcic7XG59XG5cbmludGVyZmFjZSBXb3JrZmxvd1N0ZXAge1xuICBpZDogc3RyaW5nO1xuICB0aXRsZTogc3RyaW5nO1xuICBkZXNjcmlwdGlvbjogc3RyaW5nO1xuICBhZ2VudDogc3RyaW5nO1xuICBjb21wbGV0ZWQ6IGJvb2xlYW47XG4gIHN5c3RlbVByb21wdDogc3RyaW5nO1xufVxuXG5leHBvcnQgY29uc3QgQWdlbnRpdmVXb3JrZmxvdzogUmVhY3QuRkMgPSAoKSA9PiB7XG4gIGNvbnN0IFttZXNzYWdlcywgc2V0TWVzc2FnZXNdID0gdXNlU3RhdGU8V29ya2Zsb3dNZXNzYWdlW10+KFtdKTtcbiAgY29uc3QgW2lucHV0LCBzZXRJbnB1dF0gPSB1c2VTdGF0ZSgnJyk7XG4gIGNvbnN0IFtpc1Byb2Nlc3NpbmcsIHNldElzUHJvY2Vzc2luZ10gPSB1c2VTdGF0ZShmYWxzZSk7XG4gIGNvbnN0IFtjdXJyZW50U3RlcCwgc2V0Q3VycmVudFN0ZXBdID0gdXNlU3RhdGU8V29ya2Zsb3dTdGVwIHwgbnVsbD4obnVsbCk7XG4gIGNvbnN0IFtwcm9qZWN0LCBzZXRQcm9qZWN0XSA9IHVzZVN0YXRlKHtcbiAgICBhcnRpc3ROYW1lOiAnJyxcbiAgICB0cmFja1RpdGxlOiAnJyxcbiAgICBnZW5yZTogJycsXG4gICAgbWFya2V0aW5nQnVkZ2V0OiAnJyxcbiAgICBkaXN0cmlidXRpb25QbGF0Zm9ybXM6IFtdIGFzIHN0cmluZ1tdLFxuICB9KTtcbiAgXG4gIGNvbnN0IG1lc3NhZ2VzRW5kUmVmID0gdXNlUmVmPEhUTUxEaXZFbGVtZW50PihudWxsKTtcblxuICBjb25zdCB3b3JrZmxvd1N0ZXBzOiBXb3JrZmxvd1N0ZXBbXSA9IFtcbiAgICB7XG4gICAgICBpZDogJ2Rpc3RyaWJ1dGlvbicsXG4gICAgICB0aXRsZTogJ0Rpc3RyaWJ1dGlvbiBTdHJhdGVneScsXG4gICAgICBkZXNjcmlwdGlvbjogJ1BsYW4geW91ciBtdXNpYyByZWxlYXNlIGFjcm9zcyBwbGF0Zm9ybXMnLFxuICAgICAgYWdlbnQ6ICdEaXN0cmlidXRpb24gU3RyYXRlZ2lzdCcsXG4gICAgICBjb21wbGV0ZWQ6IGZhbHNlLFxuICAgICAgc3lzdGVtUHJvbXB0OiBhZ2VudFByb21wdHMuZGlzdHJpYnV0aW9uLmluaXRpYWxcbiAgICB9LFxuICAgIHtcbiAgICAgIGlkOiAnbWFya2V0aW5nJyxcbiAgICAgIHRpdGxlOiAnTWFya2V0aW5nIENhbXBhaWduJyxcbiAgICAgIGRlc2NyaXB0aW9uOiAnQ3JlYXRlIHRhcmdldGVkIG1hcmtldGluZyBjYW1wYWlnbnMnLFxuICAgICAgYWdlbnQ6ICdNYXJrZXRpbmcgRGlyZWN0b3InLFxuICAgICAgY29tcGxldGVkOiBmYWxzZSxcbiAgICAgIHN5c3RlbVByb21wdDogYWdlbnRQcm9tcHRzLm1hcmtldGluZy5pbml0aWFsXG4gICAgfSxcbiAgICB7XG4gICAgICBpZDogJ3BsYXlsaXN0JyxcbiAgICAgIHRpdGxlOiAnUGxheWxpc3QgU3RyYXRlZ3knLFxuICAgICAgZGVzY3JpcHRpb246ICdPcHRpbWl6ZSBwbGF5bGlzdCBzdWJtaXNzaW9uIHN0cmF0ZWd5JyxcbiAgICAgIGFnZW50OiAnUGxheWxpc3QgQ3VyYXRvcicsXG4gICAgICBjb21wbGV0ZWQ6IGZhbHNlLFxuICAgICAgc3lzdGVtUHJvbXB0OiBhZ2VudFByb21wdHMucGxheWxpc3QuaW5pdGlhbFxuICAgIH1cbiAgXTtcblxuICB1c2VFZmZlY3QoKCkgPT4ge1xuICAgIHNjcm9sbFRvQm90dG9tKCk7XG4gIH0sIFttZXNzYWdlc10pO1xuXG4gIGNvbnN0IHNjcm9sbFRvQm90dG9tID0gKCkgPT4ge1xuICAgIG1lc3NhZ2VzRW5kUmVmLmN1cnJlbnQ/LnNjcm9sbEludG9WaWV3KHsgYmVoYXZpb3I6IFwic21vb3RoXCIgfSk7XG4gIH07XG5cbiAgY29uc3QgaGFuZGxlU3RlcFNlbGVjdCA9IGFzeW5jIChzdGVwOiBXb3JrZmxvd1N0ZXApID0+IHtcbiAgICBzZXRDdXJyZW50U3RlcChzdGVwKTtcbiAgICBjb25zdCBzeXN0ZW1NZXNzYWdlOiBXb3JrZmxvd01lc3NhZ2UgPSB7XG4gICAgICBpZDogdXVpZHY0KCksXG4gICAgICByb2xlOiAnc3lzdGVtJyxcbiAgICAgIGNvbnRlbnQ6IHN0ZXAuc3lzdGVtUHJvbXB0LFxuICAgICAgdGltZXN0YW1wOiBuZXcgRGF0ZSgpLFxuICAgICAgYWdlbnRJZDogc3RlcC5pZFxuICAgIH07XG4gICAgc2V0TWVzc2FnZXMocHJldiA9PiBbLi4ucHJldiwgc3lzdGVtTWVzc2FnZV0pO1xuICB9O1xuXG4gIGNvbnN0IGhhbmRsZVN1Ym1pdCA9IGFzeW5jICgpID0+IHtcbiAgICBpZiAoIWlucHV0LnRyaW0oKSB8fCAhY3VycmVudFN0ZXApIHJldHVybjtcblxuICAgIHNldElzUHJvY2Vzc2luZyh0cnVlKTtcbiAgICBjb25zdCB1c2VyTWVzc2FnZTogV29ya2Zsb3dNZXNzYWdlID0ge1xuICAgICAgaWQ6IHV1aWR2NCgpLFxuICAgICAgcm9sZTogJ3VzZXInLFxuICAgICAgY29udGVudDogaW5wdXQsXG4gICAgICB0aW1lc3RhbXA6IG5ldyBEYXRlKCksXG4gICAgICBhZ2VudElkOiBjdXJyZW50U3RlcC5pZFxuICAgIH07XG5cbiAgICBzZXRNZXNzYWdlcyhwcmV2ID0+IFsuLi5wcmV2LCB1c2VyTWVzc2FnZV0pO1xuICAgIHNldElucHV0KCcnKTtcblxuICAgIHRyeSB7XG4gICAgICBjb25zdCByZXNwb25zZSA9IGF3YWl0IGZldGNoKCcvYXBpL2NvcGlsb3QnLCB7XG4gICAgICAgIG1ldGhvZDogJ1BPU1QnLFxuICAgICAgICBoZWFkZXJzOiB7XG4gICAgICAgICAgJ0NvbnRlbnQtVHlwZSc6ICdhcHBsaWNhdGlvbi9qc29uJyxcbiAgICAgICAgfSxcbiAgICAgICAgYm9keTogSlNPTi5zdHJpbmdpZnkoe1xuICAgICAgICAgIG1lc3NhZ2VzOiBbXG4gICAgICAgICAgICB7XG4gICAgICAgICAgICAgIHJvbGU6ICdzeXN0ZW0nLFxuICAgICAgICAgICAgICBjb250ZW50OiBgWW91IGFyZSBhICR7Y3VycmVudFN0ZXAuYWdlbnR9IGhlbHBpbmcgd2l0aCBtdXNpYyBwcm9qZWN0IHN0cmF0ZWd5LiBcbiAgICAgICAgICAgICAgICAgICAgICAgQ3VycmVudCBzdGVwOiAke2N1cnJlbnRTdGVwLnRpdGxlfWBcbiAgICAgICAgICAgIH0sXG4gICAgICAgICAgICAuLi5tZXNzYWdlcy5tYXAobSA9PiAoe1xuICAgICAgICAgICAgICByb2xlOiBtLnJvbGUsXG4gICAgICAgICAgICAgIGNvbnRlbnQ6IG0uY29udGVudFxuICAgICAgICAgICAgfSkpLFxuICAgICAgICAgICAge1xuICAgICAgICAgICAgICByb2xlOiAndXNlcicsXG4gICAgICAgICAgICAgIGNvbnRlbnQ6IGlucHV0XG4gICAgICAgICAgICB9XG4gICAgICAgICAgXVxuICAgICAgICB9KVxuICAgICAgfSk7XG5cbiAgICAgIGNvbnN0IHJlYWRlciA9IHJlc3BvbnNlLmJvZHk/LmdldFJlYWRlcigpO1xuICAgICAgY29uc3QgZGVjb2RlciA9IG5ldyBUZXh0RGVjb2RlcigpO1xuICAgICAgbGV0IGFjY3VtdWxhdGVkUmVzcG9uc2UgPSAnJztcblxuICAgICAgaWYgKHJlYWRlcikge1xuICAgICAgICBjb25zdCBhc3Npc3RhbnRNZXNzYWdlOiBXb3JrZmxvd01lc3NhZ2UgPSB7XG4gICAgICAgICAgaWQ6IHV1aWR2NCgpLFxuICAgICAgICAgIHJvbGU6ICdhc3Npc3RhbnQnLFxuICAgICAgICAgIGNvbnRlbnQ6ICcnLFxuICAgICAgICAgIHRpbWVzdGFtcDogbmV3IERhdGUoKSxcbiAgICAgICAgICBhZ2VudElkOiBjdXJyZW50U3RlcC5pZCxcbiAgICAgICAgICBzdGF0dXM6ICd0aGlua2luZydcbiAgICAgICAgfTtcblxuICAgICAgICBzZXRNZXNzYWdlcyhwcmV2ID0+IFsuLi5wcmV2LCBhc3Npc3RhbnRNZXNzYWdlXSk7XG5cbiAgICAgICAgd2hpbGUgKHRydWUpIHtcbiAgICAgICAgICBjb25zdCB7IGRvbmUsIHZhbHVlIH0gPSBhd2FpdCByZWFkZXIucmVhZCgpO1xuICAgICAgICAgIGlmIChkb25lKSBicmVhaztcblxuICAgICAgICAgIGNvbnN0IGNodW5rID0gZGVjb2Rlci5kZWNvZGUodmFsdWUpO1xuICAgICAgICAgIGNvbnN0IGxpbmVzID0gY2h1bmsuc3BsaXQoJ1xcbicpO1xuXG4gICAgICAgICAgZm9yIChjb25zdCBsaW5lIG9mIGxpbmVzKSB7XG4gICAgICAgICAgICBpZiAobGluZS5zdGFydHNXaXRoKCdkYXRhOiAnKSkge1xuICAgICAgICAgICAgICBjb25zdCBqc29uU3RyID0gbGluZS5zbGljZSg2KTtcbiAgICAgICAgICAgICAgaWYgKGpzb25TdHIgPT09ICdbRE9ORV0nKSBjb250aW51ZTtcblxuICAgICAgICAgICAgICB0cnkge1xuICAgICAgICAgICAgICAgIGNvbnN0IHsgY29udGVudCB9ID0gSlNPTi5wYXJzZShqc29uU3RyKTtcbiAgICAgICAgICAgICAgICBhY2N1bXVsYXRlZFJlc3BvbnNlICs9IGNvbnRlbnQ7XG4gICAgICAgICAgICAgICAgXG4gICAgICAgICAgICAgICAgc2V0TWVzc2FnZXMocHJldiA9PiBwcmV2Lm1hcChtc2cgPT4gXG4gICAgICAgICAgICAgICAgICBtc2cuaWQgPT09IGFzc2lzdGFudE1lc3NhZ2UuaWQgXG4gICAgICAgICAgICAgICAgICAgID8geyAuLi5tc2csIGNvbnRlbnQ6IGFjY3VtdWxhdGVkUmVzcG9uc2UsIHN0YXR1czogJ2NvbXBsZXRlJyB9XG4gICAgICAgICAgICAgICAgICAgIDogbXNnXG4gICAgICAgICAgICAgICAgKSk7XG4gICAgICAgICAgICAgIH0gY2F0Y2ggKGUpIHtcbiAgICAgICAgICAgICAgICBjb25zb2xlLmVycm9yKCdFcnJvciBwYXJzaW5nIEpTT046JywgZSk7XG4gICAgICAgICAgICAgIH1cbiAgICAgICAgICAgIH1cbiAgICAgICAgICB9XG4gICAgICAgIH1cblxuICAgICAgICAvLyBNYXJrIHN0ZXAgYXMgY29tcGxldGVkXG4gICAgICAgIHNldEN1cnJlbnRTdGVwKHByZXYgPT4gcHJldiA/IHsgLi4ucHJldiwgY29tcGxldGVkOiB0cnVlIH0gOiBudWxsKTtcbiAgICAgIH1cbiAgICB9IGNhdGNoIChlcnJvcikge1xuICAgICAgY29uc29sZS5lcnJvcignRXJyb3I6JywgZXJyb3IpO1xuICAgICAgc2V0TWVzc2FnZXMocHJldiA9PiBbLi4ucHJldiwge1xuICAgICAgICBpZDogdXVpZHY0KCksXG4gICAgICAgIHJvbGU6ICdzeXN0ZW0nLFxuICAgICAgICBjb250ZW50OiAnQW4gZXJyb3Igb2NjdXJyZWQgd2hpbGUgcHJvY2Vzc2luZyB5b3VyIHJlcXVlc3QuIFBsZWFzZSB0cnkgYWdhaW4uJyxcbiAgICAgICAgdGltZXN0YW1wOiBuZXcgRGF0ZSgpLFxuICAgICAgICBzdGF0dXM6ICdlcnJvcidcbiAgICAgIH1dKTtcbiAgICB9IGZpbmFsbHkge1xuICAgICAgc2V0SXNQcm9jZXNzaW5nKGZhbHNlKTtcbiAgICB9XG4gIH07XG5cbiAgcmV0dXJuIChcbiAgICA8ZGl2IGNsYXNzTmFtZT1cImZsZXggaC1zY3JlZW4gYmctZ3JheS01MFwiPlxuICAgICAgey8qIFNpZGViYXIgKi99XG4gICAgICA8ZGl2IGNsYXNzTmFtZT1cInctODAgYm9yZGVyLXIgYmctd2hpdGUgcC00IG92ZXJmbG93LXktYXV0b1wiPlxuICAgICAgICA8aDIgY2xhc3NOYW1lPVwidGV4dC14bCBmb250LWJvbGQgbWItNFwiPk11c2ljIFByb2plY3QgV29ya2Zsb3c8L2gyPlxuICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cInNwYWNlLXktMlwiPlxuICAgICAgICAgIHt3b3JrZmxvd1N0ZXBzLm1hcCgoc3RlcCkgPT4gKFxuICAgICAgICAgICAgPG1vdGlvbi5kaXZcbiAgICAgICAgICAgICAga2V5PXtzdGVwLmlkfVxuICAgICAgICAgICAgICBvbkNsaWNrPXsoKSA9PiBoYW5kbGVTdGVwU2VsZWN0KHN0ZXApfVxuICAgICAgICAgICAgICBjbGFzc05hbWU9e2BwLTQgcm91bmRlZC1sZyBjdXJzb3ItcG9pbnRlciAke1xuICAgICAgICAgICAgICAgIGN1cnJlbnRTdGVwPy5pZCA9PT0gc3RlcC5pZCBcbiAgICAgICAgICAgICAgICAgID8gJ2JnLWJsdWUtNTAgYm9yZGVyLWJsdWUtMjAwIGJvcmRlci0yJyBcbiAgICAgICAgICAgICAgICAgIDogJ2JnLWdyYXktNTAgaG92ZXI6YmctZ3JheS0xMDAnXG4gICAgICAgICAgICAgIH1gfVxuICAgICAgICAgICAgICB3aGlsZUhvdmVyPXt7IHNjYWxlOiAxLjAyIH19XG4gICAgICAgICAgICAgIHdoaWxlVGFwPXt7IHNjYWxlOiAwLjk4IH19XG4gICAgICAgICAgICA+XG4gICAgICAgICAgICAgIDxoMyBjbGFzc05hbWU9XCJmb250LXNlbWlib2xkIGZsZXggaXRlbXMtY2VudGVyIGdhcC0yXCI+XG4gICAgICAgICAgICAgICAge3N0ZXAudGl0bGV9XG4gICAgICAgICAgICAgICAge3N0ZXAuY29tcGxldGVkICYmIChcbiAgICAgICAgICAgICAgICAgIDxtb3Rpb24uc3BhbiBcbiAgICAgICAgICAgICAgICAgICAgaW5pdGlhbD17eyBzY2FsZTogMCB9fVxuICAgICAgICAgICAgICAgICAgICBhbmltYXRlPXt7IHNjYWxlOiAxIH19XG4gICAgICAgICAgICAgICAgICAgIGNsYXNzTmFtZT1cInRleHQtZ3JlZW4tNTAwXCJcbiAgICAgICAgICAgICAgICAgID5cbiAgICAgICAgICAgICAgICAgICAg4pyTXG4gICAgICAgICAgICAgICAgICA8L21vdGlvbi5zcGFuPlxuICAgICAgICAgICAgICAgICl9XG4gICAgICAgICAgICAgIDwvaDM+XG4gICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT1cInRleHQtc20gdGV4dC1ncmF5LTYwMFwiPntzdGVwLmRlc2NyaXB0aW9ufTwvcD5cbiAgICAgICAgICAgIDwvbW90aW9uLmRpdj5cbiAgICAgICAgICApKX1cbiAgICAgICAgPC9kaXY+XG4gICAgICA8L2Rpdj5cblxuICAgICAgey8qIE1haW4gY2hhdCBhcmVhICovfVxuICAgICAgPGRpdiBjbGFzc05hbWU9XCJmbGV4LTEgZmxleCBmbGV4LWNvbFwiPlxuICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImZsZXgtMSBvdmVyZmxvdy15LWF1dG8gcC02IHNwYWNlLXktNFwiPlxuICAgICAgICAgIDxBbmltYXRlUHJlc2VuY2U+XG4gICAgICAgICAgICB7bWVzc2FnZXMubWFwKChtZXNzYWdlKSA9PiAoXG4gICAgICAgICAgICAgIDxtb3Rpb24uZGl2XG4gICAgICAgICAgICAgICAga2V5PXttZXNzYWdlLmlkfVxuICAgICAgICAgICAgICAgIGluaXRpYWw9e3sgb3BhY2l0eTogMCwgeTogMjAgfX1cbiAgICAgICAgICAgICAgICBhbmltYXRlPXt7IG9wYWNpdHk6IDEsIHk6IDAgfX1cbiAgICAgICAgICAgICAgICBleGl0PXt7IG9wYWNpdHk6IDAsIHk6IC0yMCB9fVxuICAgICAgICAgICAgICAgIGNsYXNzTmFtZT17YGZsZXggJHtcbiAgICAgICAgICAgICAgICAgIG1lc3NhZ2Uucm9sZSA9PT0gJ3VzZXInID8gJ2p1c3RpZnktZW5kJyA6ICdqdXN0aWZ5LXN0YXJ0J1xuICAgICAgICAgICAgICAgIH1gfVxuICAgICAgICAgICAgICA+XG4gICAgICAgICAgICAgICAgPGRpdlxuICAgICAgICAgICAgICAgICAgY2xhc3NOYW1lPXtgbWF4LXctWzgwJV0gcm91bmRlZC1sZyBwLTQgJHtcbiAgICAgICAgICAgICAgICAgICAgbWVzc2FnZS5yb2xlID09PSAndXNlcidcbiAgICAgICAgICAgICAgICAgICAgICA/ICdiZy1ibHVlLTUwMCB0ZXh0LXdoaXRlJ1xuICAgICAgICAgICAgICAgICAgICAgIDogbWVzc2FnZS5yb2xlID09PSAnc3lzdGVtJ1xuICAgICAgICAgICAgICAgICAgICAgID8gJ2JnLWdyYXktMTAwJ1xuICAgICAgICAgICAgICAgICAgICAgIDogJ2JnLXdoaXRlIGJvcmRlcidcbiAgICAgICAgICAgICAgICAgIH1gfVxuICAgICAgICAgICAgICAgID5cbiAgICAgICAgICAgICAgICAgIHttZXNzYWdlLnN0YXR1cyA9PT0gJ3RoaW5raW5nJyA/IChcbiAgICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMlwiPlxuICAgICAgICAgICAgICAgICAgICAgIDxtb3Rpb24uZGl2XG4gICAgICAgICAgICAgICAgICAgICAgICBhbmltYXRlPXt7IHJvdGF0ZTogMzYwIH19XG4gICAgICAgICAgICAgICAgICAgICAgICB0cmFuc2l0aW9uPXt7IGR1cmF0aW9uOiAxLCByZXBlYXQ6IEluZmluaXR5IH19XG4gICAgICAgICAgICAgICAgICAgICAgICBjbGFzc05hbWU9XCJ3LTQgaC00IGJvcmRlci0yIGJvcmRlci1ibHVlLTUwMCBib3JkZXItdC10cmFuc3BhcmVudCByb3VuZGVkLWZ1bGxcIlxuICAgICAgICAgICAgICAgICAgICAgIC8+XG4gICAgICAgICAgICAgICAgICAgICAgVGhpbmtpbmcuLi5cbiAgICAgICAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICAgICAgICApIDogKFxuICAgICAgICAgICAgICAgICAgICA8UmVhY3RNYXJrZG93biBjbGFzc05hbWU9XCJwcm9zZSBtYXgtdy1ub25lIGRhcms6cHJvc2UtaW52ZXJ0XCI+XG4gICAgICAgICAgICAgICAgICAgICAge21lc3NhZ2UuY29udGVudH1cbiAgICAgICAgICAgICAgICAgICAgPC9SZWFjdE1hcmtkb3duPlxuICAgICAgICAgICAgICAgICAgKX1cbiAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwidGV4dC14cyBvcGFjaXR5LTUwIG10LTJcIj5cbiAgICAgICAgICAgICAgICAgICAge21lc3NhZ2UudGltZXN0YW1wLnRvTG9jYWxlVGltZVN0cmluZygpfVxuICAgICAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICAgIDwvbW90aW9uLmRpdj5cbiAgICAgICAgICAgICkpfVxuICAgICAgICAgICAgPGRpdiByZWY9e21lc3NhZ2VzRW5kUmVmfSAvPlxuICAgICAgICAgIDwvQW5pbWF0ZVByZXNlbmNlPlxuICAgICAgICA8L2Rpdj5cblxuICAgICAgICB7LyogSW5wdXQgYXJlYSAqL31cbiAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJib3JkZXItdCBiZy13aGl0ZSBwLTRcIj5cbiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cIm1heC13LTR4bCBteC1hdXRvXCI+XG4gICAgICAgICAgICA8dGV4dGFyZWFcbiAgICAgICAgICAgICAgdmFsdWU9e2lucHV0fVxuICAgICAgICAgICAgICBvbkNoYW5nZT17KGUpID0+IHNldElucHV0KGUudGFyZ2V0LnZhbHVlKX1cbiAgICAgICAgICAgICAgcGxhY2Vob2xkZXI9e2N1cnJlbnRTdGVwIFxuICAgICAgICAgICAgICAgID8gYERpc2N1c3MgJHtjdXJyZW50U3RlcC50aXRsZS50b0xvd2VyQ2FzZSgpfSB3aXRoICR7Y3VycmVudFN0ZXAuYWdlbnR9Li4uYCBcbiAgICAgICAgICAgICAgICA6IFwiU2VsZWN0IGEgd29ya2Zsb3cgc3RlcCB0byBiZWdpbi4uLlwiXG4gICAgICAgICAgICAgIH1cbiAgICAgICAgICAgICAgY2xhc3NOYW1lPVwidy1mdWxsIHAtNCByb3VuZGVkLWxnIGJvcmRlciBtaW4taC1bMTAwcHhdIGZvY3VzOnJpbmctMiBmb2N1czpyaW5nLWJsdWUtNTAwXCJcbiAgICAgICAgICAgICAgZGlzYWJsZWQ9e2lzUHJvY2Vzc2luZyB8fCAhY3VycmVudFN0ZXB9XG4gICAgICAgICAgICAvPlxuICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJmbGV4IGp1c3RpZnktYmV0d2VlbiBtdC0yXCI+XG4gICAgICAgICAgICAgIDxCdXR0b25cbiAgICAgICAgICAgICAgICB2YXJpYW50PVwib3V0bGluZVwiXG4gICAgICAgICAgICAgICAgb25DbGljaz17KCkgPT4gc2V0SW5wdXQoJycpfVxuICAgICAgICAgICAgICAgIGRpc2FibGVkPXtpc1Byb2Nlc3NpbmcgfHwgIWlucHV0fVxuICAgICAgICAgICAgICA+XG4gICAgICAgICAgICAgICAgQ2xlYXJcbiAgICAgICAgICAgICAgPC9CdXR0b24+XG4gICAgICAgICAgICAgIDxCdXR0b25cbiAgICAgICAgICAgICAgICBvbkNsaWNrPXtoYW5kbGVTdWJtaXR9XG4gICAgICAgICAgICAgICAgZGlzYWJsZWQ9e2lzUHJvY2Vzc2luZyB8fCAhaW5wdXQgfHwgIWN1cnJlbnRTdGVwfVxuICAgICAgICAgICAgICAgIGNsYXNzTmFtZT1cImJnLWJsdWUtNTAwIHRleHQtd2hpdGVcIlxuICAgICAgICAgICAgICA+XG4gICAgICAgICAgICAgICAge2lzUHJvY2Vzc2luZyA/ICdQcm9jZXNzaW5nLi4uJyA6ICdTZW5kIE1lc3NhZ2UnfVxuICAgICAgICAgICAgICA8L0J1dHRvbj5cbiAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgIDwvZGl2PlxuICAgICAgICA8L2Rpdj5cbiAgICAgIDwvZGl2PlxuICAgIDwvZGl2PlxuICApO1xufTsiXSwibmFtZXMiOlsiUmVhY3QiLCJ1c2VTdGF0ZSIsInVzZVJlZiIsInVzZUVmZmVjdCIsIm1vdGlvbiIsIkFuaW1hdGVQcmVzZW5jZSIsIlJlYWN0TWFya2Rvd24iLCJCdXR0b24iLCJhZ2VudFByb21wdHMiLCJ2NCIsInV1aWR2NCIsIkFnZW50aXZlV29ya2Zsb3ciLCJtZXNzYWdlcyIsInNldE1lc3NhZ2VzIiwiaW5wdXQiLCJzZXRJbnB1dCIsImlzUHJvY2Vzc2luZyIsInNldElzUHJvY2Vzc2luZyIsImN1cnJlbnRTdGVwIiwic2V0Q3VycmVudFN0ZXAiLCJwcm9qZWN0Iiwic2V0UHJvamVjdCIsImFydGlzdE5hbWUiLCJ0cmFja1RpdGxlIiwiZ2VucmUiLCJtYXJrZXRpbmdCdWRnZXQiLCJkaXN0cmlidXRpb25QbGF0Zm9ybXMiLCJtZXNzYWdlc0VuZFJlZiIsIndvcmtmbG93U3RlcHMiLCJpZCIsInRpdGxlIiwiZGVzY3JpcHRpb24iLCJhZ2VudCIsImNvbXBsZXRlZCIsInN5c3RlbVByb21wdCIsImRpc3RyaWJ1dGlvbiIsImluaXRpYWwiLCJtYXJrZXRpbmciLCJwbGF5bGlzdCIsInNjcm9sbFRvQm90dG9tIiwiY3VycmVudCIsInNjcm9sbEludG9WaWV3IiwiYmVoYXZpb3IiLCJoYW5kbGVTdGVwU2VsZWN0Iiwic3RlcCIsInN5c3RlbU1lc3NhZ2UiLCJyb2xlIiwiY29udGVudCIsInRpbWVzdGFtcCIsIkRhdGUiLCJhZ2VudElkIiwicHJldiIsImhhbmRsZVN1Ym1pdCIsInRyaW0iLCJ1c2VyTWVzc2FnZSIsInJlc3BvbnNlIiwiZmV0Y2giLCJtZXRob2QiLCJoZWFkZXJzIiwiYm9keSIsIkpTT04iLCJzdHJpbmdpZnkiLCJtYXAiLCJtIiwicmVhZGVyIiwiZ2V0UmVhZGVyIiwiZGVjb2RlciIsIlRleHREZWNvZGVyIiwiYWNjdW11bGF0ZWRSZXNwb25zZSIsImFzc2lzdGFudE1lc3NhZ2UiLCJzdGF0dXMiLCJkb25lIiwidmFsdWUiLCJyZWFkIiwiY2h1bmsiLCJkZWNvZGUiLCJsaW5lcyIsInNwbGl0IiwibGluZSIsInN0YXJ0c1dpdGgiLCJqc29uU3RyIiwic2xpY2UiLCJwYXJzZSIsIm1zZyIsImUiLCJjb25zb2xlIiwiZXJyb3IiLCJkaXYiLCJjbGFzc05hbWUiLCJoMiIsIm9uQ2xpY2siLCJ3aGlsZUhvdmVyIiwic2NhbGUiLCJ3aGlsZVRhcCIsImgzIiwic3BhbiIsImFuaW1hdGUiLCJwIiwibWVzc2FnZSIsIm9wYWNpdHkiLCJ5IiwiZXhpdCIsInJvdGF0ZSIsInRyYW5zaXRpb24iLCJkdXJhdGlvbiIsInJlcGVhdCIsIkluZmluaXR5IiwidG9Mb2NhbGVUaW1lU3RyaW5nIiwicmVmIiwidGV4dGFyZWEiLCJvbkNoYW5nZSIsInRhcmdldCIsInBsYWNlaG9sZGVyIiwidG9Mb3dlckNhc2UiLCJkaXNhYmxlZCIsInZhcmlhbnQiXSwiaWdub3JlTGlzdCI6W10sInNvdXJjZVJvb3QiOiIifQ==\n//# sourceURL=webpack-internal:///./src/components/AgentiveWorkflow.tsx\n");
+
+/***/ }),
+
 /***/ "./src/components/ErrorBoundary.tsx":
 /*!******************************************!*\
   !*** ./src/components/ErrorBoundary.tsx ***!
@@ -31,6 +42,28 @@ eval("__webpack_require__.a(module, async (__webpack_handle_async_dependencies__
 
 "use strict";
 eval("__webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {\n__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   ErrorBoundary: () => (/* binding */ ErrorBoundary)\n/* harmony export */ });\n/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-dev-runtime */ \"react/jsx-dev-runtime\");\n/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ \"react\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var framer_motion__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! framer-motion */ \"framer-motion\");\nvar __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([framer_motion__WEBPACK_IMPORTED_MODULE_2__]);\nframer_motion__WEBPACK_IMPORTED_MODULE_2__ = (__webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__)[0];\n\n\n\nconst errorVariants = {\n    initial: {\n        opacity: 0,\n        y: -20,\n        scale: 0.95\n    },\n    animate: {\n        opacity: 1,\n        y: 0,\n        scale: 1,\n        transition: {\n            type: \"spring\",\n            stiffness: 300,\n            damping: 20\n        }\n    },\n    exit: {\n        opacity: 0,\n        y: 20,\n        scale: 0.95,\n        transition: {\n            duration: 0.2\n        }\n    }\n};\nclass ErrorBoundary extends (react__WEBPACK_IMPORTED_MODULE_1___default().Component) {\n    constructor(props){\n        super(props);\n        this.state = {\n            hasError: false\n        };\n    }\n    static getDerivedStateFromError(error) {\n        return {\n            hasError: true,\n            error\n        };\n    }\n    render() {\n        if (this.state.hasError) {\n            return /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(framer_motion__WEBPACK_IMPORTED_MODULE_2__.AnimatePresence, {\n                children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(framer_motion__WEBPACK_IMPORTED_MODULE_2__.motion.div, {\n                    className: \"fixed top-4 right-4 max-w-md z-50\",\n                    variants: errorVariants,\n                    initial: \"initial\",\n                    animate: \"animate\",\n                    exit: \"exit\",\n                    children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(framer_motion__WEBPACK_IMPORTED_MODULE_2__.motion.div, {\n                        className: \"p-4 bg-red-50 border border-red-200 rounded-lg shadow-lg\",\n                        whileHover: {\n                            scale: 1.02\n                        },\n                        whileTap: {\n                            scale: 0.98\n                        },\n                        children: [\n                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(framer_motion__WEBPACK_IMPORTED_MODULE_2__.motion.h2, {\n                                className: \"text-red-800 font-bold mb-2 flex items-center\",\n                                initial: {\n                                    x: -20\n                                },\n                                animate: {\n                                    x: 0\n                                },\n                                children: [\n                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(framer_motion__WEBPACK_IMPORTED_MODULE_2__.motion.svg, {\n                                        xmlns: \"http://www.w3.org/2000/svg\",\n                                        className: \"h-5 w-5 mr-2\",\n                                        viewBox: \"0 0 20 20\",\n                                        fill: \"currentColor\",\n                                        animate: {\n                                            rotate: [\n                                                0,\n                                                10,\n                                                -10,\n                                                0\n                                            ],\n                                            scale: [\n                                                1,\n                                                1.1,\n                                                1.1,\n                                                1\n                                            ]\n                                        },\n                                        transition: {\n                                            duration: 0.5,\n                                            repeat: Infinity,\n                                            repeatDelay: 2\n                                        },\n                                        children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"path\", {\n                                            fillRule: \"evenodd\",\n                                            d: \"M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z\",\n                                            clipRule: \"evenodd\"\n                                        }, void 0, false, {\n                                            fileName: \"/Users/afromusedigital/agentive/src/components/ErrorBoundary.tsx\",\n                                            lineNumber: 88,\n                                            columnNumber: 19\n                                        }, this)\n                                    }, void 0, false, {\n                                        fileName: \"/Users/afromusedigital/agentive/src/components/ErrorBoundary.tsx\",\n                                        lineNumber: 73,\n                                        columnNumber: 17\n                                    }, this),\n                                    \"Something went wrong\"\n                                ]\n                            }, void 0, true, {\n                                fileName: \"/Users/afromusedigital/agentive/src/components/ErrorBoundary.tsx\",\n                                lineNumber: 68,\n                                columnNumber: 15\n                            }, this),\n                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(framer_motion__WEBPACK_IMPORTED_MODULE_2__.motion.p, {\n                                className: \"text-red-600\",\n                                initial: {\n                                    opacity: 0\n                                },\n                                animate: {\n                                    opacity: 1\n                                },\n                                transition: {\n                                    delay: 0.2\n                                },\n                                children: this.state.error?.message\n                            }, void 0, false, {\n                                fileName: \"/Users/afromusedigital/agentive/src/components/ErrorBoundary.tsx\",\n                                lineNumber: 92,\n                                columnNumber: 15\n                            }, this),\n                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(framer_motion__WEBPACK_IMPORTED_MODULE_2__.motion.button, {\n                                className: \"mt-3 text-sm text-red-800 hover:text-red-900\",\n                                whileHover: {\n                                    scale: 1.05\n                                },\n                                whileTap: {\n                                    scale: 0.95\n                                },\n                                onClick: ()=>window.location.reload(),\n                                children: \"Reload page\"\n                            }, void 0, false, {\n                                fileName: \"/Users/afromusedigital/agentive/src/components/ErrorBoundary.tsx\",\n                                lineNumber: 100,\n                                columnNumber: 15\n                            }, this)\n                        ]\n                    }, void 0, true, {\n                        fileName: \"/Users/afromusedigital/agentive/src/components/ErrorBoundary.tsx\",\n                        lineNumber: 63,\n                        columnNumber: 13\n                    }, this)\n                }, void 0, false, {\n                    fileName: \"/Users/afromusedigital/agentive/src/components/ErrorBoundary.tsx\",\n                    lineNumber: 56,\n                    columnNumber: 11\n                }, this)\n            }, void 0, false, {\n                fileName: \"/Users/afromusedigital/agentive/src/components/ErrorBoundary.tsx\",\n                lineNumber: 55,\n                columnNumber: 9\n            }, this);\n        }\n        return this.props.children;\n    }\n}\n\n__webpack_async_result__();\n} catch(e) { __webpack_async_result__(e); } });//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9zcmMvY29tcG9uZW50cy9FcnJvckJvdW5kYXJ5LnRzeCIsIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7O0FBQW9EO0FBQ0k7QUFXeEQsTUFBTUcsZ0JBQWdCO0lBQ3BCQyxTQUFTO1FBQ1BDLFNBQVM7UUFDVEMsR0FBRyxDQUFDO1FBQ0pDLE9BQU87SUFDVDtJQUNBQyxTQUFTO1FBQ1BILFNBQVM7UUFDVEMsR0FBRztRQUNIQyxPQUFPO1FBQ1BFLFlBQVk7WUFDVkMsTUFBTTtZQUNOQyxXQUFXO1lBQ1hDLFNBQVM7UUFDWDtJQUNGO0lBQ0FDLE1BQU07UUFDSlIsU0FBUztRQUNUQyxHQUFHO1FBQ0hDLE9BQU87UUFDUEUsWUFBWTtZQUNWSyxVQUFVO1FBQ1o7SUFDRjtBQUNGO0FBRU8sTUFBTUMsc0JBQXNCZix3REFBZTtJQUNoRGlCLFlBQVlDLEtBQVksQ0FBRTtRQUN4QixLQUFLLENBQUNBO1FBQ04sSUFBSSxDQUFDQyxLQUFLLEdBQUc7WUFBRUMsVUFBVTtRQUFNO0lBQ2pDO0lBRUEsT0FBT0MseUJBQXlCQyxLQUFZLEVBQVM7UUFDbkQsT0FBTztZQUNMRixVQUFVO1lBQ1ZFO1FBQ0Y7SUFDRjtJQUVBQyxTQUFTO1FBQ1AsSUFBSSxJQUFJLENBQUNKLEtBQUssQ0FBQ0MsUUFBUSxFQUFFO1lBQ3ZCLHFCQUNFLDhEQUFDbEIsMERBQWVBOzBCQUNkLDRFQUFDRCxpREFBTUEsQ0FBQ3VCLEdBQUc7b0JBQ1RDLFdBQVU7b0JBQ1ZDLFVBQVV2QjtvQkFDVkMsU0FBUTtvQkFDUkksU0FBUTtvQkFDUkssTUFBSzs4QkFFTCw0RUFBQ1osaURBQU1BLENBQUN1QixHQUFHO3dCQUNUQyxXQUFVO3dCQUNWRSxZQUFZOzRCQUFFcEIsT0FBTzt3QkFBSzt3QkFDMUJxQixVQUFVOzRCQUFFckIsT0FBTzt3QkFBSzs7MENBRXhCLDhEQUFDTixpREFBTUEsQ0FBQzRCLEVBQUU7Z0NBQ1JKLFdBQVU7Z0NBQ1ZyQixTQUFTO29DQUFFMEIsR0FBRyxDQUFDO2dDQUFHO2dDQUNsQnRCLFNBQVM7b0NBQUVzQixHQUFHO2dDQUFFOztrREFFaEIsOERBQUM3QixpREFBTUEsQ0FBQzhCLEdBQUc7d0NBQ1RDLE9BQU07d0NBQ05QLFdBQVU7d0NBQ1ZRLFNBQVE7d0NBQ1JDLE1BQUs7d0NBQ0wxQixTQUFTOzRDQUNQMkIsUUFBUTtnREFBQztnREFBRztnREFBSSxDQUFDO2dEQUFJOzZDQUFFOzRDQUN2QjVCLE9BQU87Z0RBQUM7Z0RBQUc7Z0RBQUs7Z0RBQUs7NkNBQUU7d0NBQ3pCO3dDQUNBRSxZQUFZOzRDQUNWSyxVQUFVOzRDQUNWc0IsUUFBUUM7NENBQ1JDLGFBQWE7d0NBQ2Y7a0RBRUEsNEVBQUNDOzRDQUFLQyxVQUFTOzRDQUFVQyxHQUFFOzRDQUEwTkMsVUFBUzs7Ozs7Ozs7Ozs7b0NBQ25QOzs7Ozs7OzBDQUdmLDhEQUFDekMsaURBQU1BLENBQUMwQyxDQUFDO2dDQUNQbEIsV0FBVTtnQ0FDVnJCLFNBQVM7b0NBQUVDLFNBQVM7Z0NBQUU7Z0NBQ3RCRyxTQUFTO29DQUFFSCxTQUFTO2dDQUFFO2dDQUN0QkksWUFBWTtvQ0FBRW1DLE9BQU87Z0NBQUk7MENBRXhCLElBQUksQ0FBQ3pCLEtBQUssQ0FBQ0csS0FBSyxFQUFFdUI7Ozs7OzswQ0FFckIsOERBQUM1QyxpREFBTUEsQ0FBQzZDLE1BQU07Z0NBQ1pyQixXQUFVO2dDQUNWRSxZQUFZO29DQUFFcEIsT0FBTztnQ0FBSztnQ0FDMUJxQixVQUFVO29DQUFFckIsT0FBTztnQ0FBSztnQ0FDeEJ3QyxTQUFTLElBQU1DLE9BQU9DLFFBQVEsQ0FBQ0MsTUFBTTswQ0FDdEM7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7UUFPWDtRQUVBLE9BQU8sSUFBSSxDQUFDaEMsS0FBSyxDQUFDaUMsUUFBUTtJQUM1QjtBQUNGIiwic291cmNlcyI6WyIvVXNlcnMvYWZyb211c2VkaWdpdGFsL2FnZW50aXZlL3NyYy9jb21wb25lbnRzL0Vycm9yQm91bmRhcnkudHN4Il0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBSZWFjdCwgeyBDb21wb25lbnQsIFJlYWN0Tm9kZSB9IGZyb20gJ3JlYWN0JztcbmltcG9ydCB7IG1vdGlvbiwgQW5pbWF0ZVByZXNlbmNlIH0gZnJvbSAnZnJhbWVyLW1vdGlvbic7XG5cbmludGVyZmFjZSBQcm9wcyB7XG4gIGNoaWxkcmVuOiBSZWFjdE5vZGU7XG59XG5cbmludGVyZmFjZSBTdGF0ZSB7XG4gIGhhc0Vycm9yOiBib29sZWFuO1xuICBlcnJvcj86IEVycm9yO1xufVxuXG5jb25zdCBlcnJvclZhcmlhbnRzID0ge1xuICBpbml0aWFsOiB7XG4gICAgb3BhY2l0eTogMCxcbiAgICB5OiAtMjAsXG4gICAgc2NhbGU6IDAuOTVcbiAgfSxcbiAgYW5pbWF0ZToge1xuICAgIG9wYWNpdHk6IDEsXG4gICAgeTogMCxcbiAgICBzY2FsZTogMSxcbiAgICB0cmFuc2l0aW9uOiB7XG4gICAgICB0eXBlOiBcInNwcmluZ1wiLFxuICAgICAgc3RpZmZuZXNzOiAzMDAsXG4gICAgICBkYW1waW5nOiAyMFxuICAgIH1cbiAgfSxcbiAgZXhpdDoge1xuICAgIG9wYWNpdHk6IDAsXG4gICAgeTogMjAsXG4gICAgc2NhbGU6IDAuOTUsXG4gICAgdHJhbnNpdGlvbjoge1xuICAgICAgZHVyYXRpb246IDAuMlxuICAgIH1cbiAgfVxufTtcblxuZXhwb3J0IGNsYXNzIEVycm9yQm91bmRhcnkgZXh0ZW5kcyBSZWFjdC5Db21wb25lbnQ8UHJvcHMsIFN0YXRlPiB7XG4gIGNvbnN0cnVjdG9yKHByb3BzOiBQcm9wcykge1xuICAgIHN1cGVyKHByb3BzKTtcbiAgICB0aGlzLnN0YXRlID0geyBoYXNFcnJvcjogZmFsc2UgfTtcbiAgfVxuXG4gIHN0YXRpYyBnZXREZXJpdmVkU3RhdGVGcm9tRXJyb3IoZXJyb3I6IEVycm9yKTogU3RhdGUge1xuICAgIHJldHVybiB7XG4gICAgICBoYXNFcnJvcjogdHJ1ZSxcbiAgICAgIGVycm9yXG4gICAgfTtcbiAgfVxuXG4gIHJlbmRlcigpIHtcbiAgICBpZiAodGhpcy5zdGF0ZS5oYXNFcnJvcikge1xuICAgICAgcmV0dXJuIChcbiAgICAgICAgPEFuaW1hdGVQcmVzZW5jZT5cbiAgICAgICAgICA8bW90aW9uLmRpdlxuICAgICAgICAgICAgY2xhc3NOYW1lPVwiZml4ZWQgdG9wLTQgcmlnaHQtNCBtYXgtdy1tZCB6LTUwXCJcbiAgICAgICAgICAgIHZhcmlhbnRzPXtlcnJvclZhcmlhbnRzfVxuICAgICAgICAgICAgaW5pdGlhbD1cImluaXRpYWxcIlxuICAgICAgICAgICAgYW5pbWF0ZT1cImFuaW1hdGVcIlxuICAgICAgICAgICAgZXhpdD1cImV4aXRcIlxuICAgICAgICAgID5cbiAgICAgICAgICAgIDxtb3Rpb24uZGl2IFxuICAgICAgICAgICAgICBjbGFzc05hbWU9XCJwLTQgYmctcmVkLTUwIGJvcmRlciBib3JkZXItcmVkLTIwMCByb3VuZGVkLWxnIHNoYWRvdy1sZ1wiXG4gICAgICAgICAgICAgIHdoaWxlSG92ZXI9e3sgc2NhbGU6IDEuMDIgfX1cbiAgICAgICAgICAgICAgd2hpbGVUYXA9e3sgc2NhbGU6IDAuOTggfX1cbiAgICAgICAgICAgID5cbiAgICAgICAgICAgICAgPG1vdGlvbi5oMiBcbiAgICAgICAgICAgICAgICBjbGFzc05hbWU9XCJ0ZXh0LXJlZC04MDAgZm9udC1ib2xkIG1iLTIgZmxleCBpdGVtcy1jZW50ZXJcIlxuICAgICAgICAgICAgICAgIGluaXRpYWw9e3sgeDogLTIwIH19XG4gICAgICAgICAgICAgICAgYW5pbWF0ZT17eyB4OiAwIH19XG4gICAgICAgICAgICAgID5cbiAgICAgICAgICAgICAgICA8bW90aW9uLnN2ZyBcbiAgICAgICAgICAgICAgICAgIHhtbG5zPVwiaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmdcIiBcbiAgICAgICAgICAgICAgICAgIGNsYXNzTmFtZT1cImgtNSB3LTUgbXItMlwiIFxuICAgICAgICAgICAgICAgICAgdmlld0JveD1cIjAgMCAyMCAyMFwiIFxuICAgICAgICAgICAgICAgICAgZmlsbD1cImN1cnJlbnRDb2xvclwiXG4gICAgICAgICAgICAgICAgICBhbmltYXRlPXt7IFxuICAgICAgICAgICAgICAgICAgICByb3RhdGU6IFswLCAxMCwgLTEwLCAwXSxcbiAgICAgICAgICAgICAgICAgICAgc2NhbGU6IFsxLCAxLjEsIDEuMSwgMV1cbiAgICAgICAgICAgICAgICAgIH19XG4gICAgICAgICAgICAgICAgICB0cmFuc2l0aW9uPXt7XG4gICAgICAgICAgICAgICAgICAgIGR1cmF0aW9uOiAwLjUsXG4gICAgICAgICAgICAgICAgICAgIHJlcGVhdDogSW5maW5pdHksXG4gICAgICAgICAgICAgICAgICAgIHJlcGVhdERlbGF5OiAyXG4gICAgICAgICAgICAgICAgICB9fVxuICAgICAgICAgICAgICAgID5cbiAgICAgICAgICAgICAgICAgIDxwYXRoIGZpbGxSdWxlPVwiZXZlbm9kZFwiIGQ9XCJNMTAgMThhOCA4IDAgMTAwLTE2IDggOCAwIDAwMCAxNnpNOC43MDcgNy4yOTNhMSAxIDAgMDAtMS40MTQgMS40MTRMOC41ODYgMTBsLTEuMjkzIDEuMjkzYTEgMSAwIDEwMS40MTQgMS40MTRMMTAgMTEuNDE0bDEuMjkzIDEuMjkzYTEgMSAwIDAwMS40MTQtMS40MTRMMTEuNDE0IDEwbDEuMjkzLTEuMjkzYTEgMSAwIDAwLTEuNDE0LTEuNDE0TDEwIDguNTg2IDguNzA3IDcuMjkzelwiIGNsaXBSdWxlPVwiZXZlbm9kZFwiIC8+XG4gICAgICAgICAgICAgICAgPC9tb3Rpb24uc3ZnPlxuICAgICAgICAgICAgICAgIFNvbWV0aGluZyB3ZW50IHdyb25nXG4gICAgICAgICAgICAgIDwvbW90aW9uLmgyPlxuICAgICAgICAgICAgICA8bW90aW9uLnAgXG4gICAgICAgICAgICAgICAgY2xhc3NOYW1lPVwidGV4dC1yZWQtNjAwXCJcbiAgICAgICAgICAgICAgICBpbml0aWFsPXt7IG9wYWNpdHk6IDAgfX1cbiAgICAgICAgICAgICAgICBhbmltYXRlPXt7IG9wYWNpdHk6IDEgfX1cbiAgICAgICAgICAgICAgICB0cmFuc2l0aW9uPXt7IGRlbGF5OiAwLjIgfX1cbiAgICAgICAgICAgICAgPlxuICAgICAgICAgICAgICAgIHt0aGlzLnN0YXRlLmVycm9yPy5tZXNzYWdlfVxuICAgICAgICAgICAgICA8L21vdGlvbi5wPlxuICAgICAgICAgICAgICA8bW90aW9uLmJ1dHRvblxuICAgICAgICAgICAgICAgIGNsYXNzTmFtZT1cIm10LTMgdGV4dC1zbSB0ZXh0LXJlZC04MDAgaG92ZXI6dGV4dC1yZWQtOTAwXCJcbiAgICAgICAgICAgICAgICB3aGlsZUhvdmVyPXt7IHNjYWxlOiAxLjA1IH19XG4gICAgICAgICAgICAgICAgd2hpbGVUYXA9e3sgc2NhbGU6IDAuOTUgfX1cbiAgICAgICAgICAgICAgICBvbkNsaWNrPXsoKSA9PiB3aW5kb3cubG9jYXRpb24ucmVsb2FkKCl9XG4gICAgICAgICAgICAgID5cbiAgICAgICAgICAgICAgICBSZWxvYWQgcGFnZVxuICAgICAgICAgICAgICA8L21vdGlvbi5idXR0b24+XG4gICAgICAgICAgICA8L21vdGlvbi5kaXY+XG4gICAgICAgICAgPC9tb3Rpb24uZGl2PlxuICAgICAgICA8L0FuaW1hdGVQcmVzZW5jZT5cbiAgICAgICk7XG4gICAgfVxuXG4gICAgcmV0dXJuIHRoaXMucHJvcHMuY2hpbGRyZW47XG4gIH1cbn0gIl0sIm5hbWVzIjpbIlJlYWN0IiwibW90aW9uIiwiQW5pbWF0ZVByZXNlbmNlIiwiZXJyb3JWYXJpYW50cyIsImluaXRpYWwiLCJvcGFjaXR5IiwieSIsInNjYWxlIiwiYW5pbWF0ZSIsInRyYW5zaXRpb24iLCJ0eXBlIiwic3RpZmZuZXNzIiwiZGFtcGluZyIsImV4aXQiLCJkdXJhdGlvbiIsIkVycm9yQm91bmRhcnkiLCJDb21wb25lbnQiLCJjb25zdHJ1Y3RvciIsInByb3BzIiwic3RhdGUiLCJoYXNFcnJvciIsImdldERlcml2ZWRTdGF0ZUZyb21FcnJvciIsImVycm9yIiwicmVuZGVyIiwiZGl2IiwiY2xhc3NOYW1lIiwidmFyaWFudHMiLCJ3aGlsZUhvdmVyIiwid2hpbGVUYXAiLCJoMiIsIngiLCJzdmciLCJ4bWxucyIsInZpZXdCb3giLCJmaWxsIiwicm90YXRlIiwicmVwZWF0IiwiSW5maW5pdHkiLCJyZXBlYXREZWxheSIsInBhdGgiLCJmaWxsUnVsZSIsImQiLCJjbGlwUnVsZSIsInAiLCJkZWxheSIsIm1lc3NhZ2UiLCJidXR0b24iLCJvbkNsaWNrIiwid2luZG93IiwibG9jYXRpb24iLCJyZWxvYWQiLCJjaGlsZHJlbiJdLCJpZ25vcmVMaXN0IjpbXSwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///./src/components/ErrorBoundary.tsx\n");
+
+/***/ }),
+
+/***/ "./src/components/ui/button.tsx":
+/*!**************************************!*\
+  !*** ./src/components/ui/button.tsx ***!
+  \**************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {\n__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   Button: () => (/* binding */ Button),\n/* harmony export */   buttonVariants: () => (/* binding */ buttonVariants)\n/* harmony export */ });\n/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-dev-runtime */ \"react/jsx-dev-runtime\");\n/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ \"react\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var _radix_ui_react_slot__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @radix-ui/react-slot */ \"@radix-ui/react-slot\");\n/* harmony import */ var class_variance_authority__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! class-variance-authority */ \"class-variance-authority\");\n/* harmony import */ var _lib_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/lib/utils */ \"./src/lib/utils.ts\");\nvar __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_radix_ui_react_slot__WEBPACK_IMPORTED_MODULE_2__, class_variance_authority__WEBPACK_IMPORTED_MODULE_3__, _lib_utils__WEBPACK_IMPORTED_MODULE_4__]);\n([_radix_ui_react_slot__WEBPACK_IMPORTED_MODULE_2__, class_variance_authority__WEBPACK_IMPORTED_MODULE_3__, _lib_utils__WEBPACK_IMPORTED_MODULE_4__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);\n\n\n\n\n\nconst buttonVariants = (0,class_variance_authority__WEBPACK_IMPORTED_MODULE_3__.cva)(\"inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background\", {\n    variants: {\n        variant: {\n            default: \"bg-primary text-primary-foreground hover:bg-primary/90\",\n            destructive: \"bg-destructive text-destructive-foreground hover:bg-destructive/90\",\n            outline: \"border border-input hover:bg-accent hover:text-accent-foreground\",\n            secondary: \"bg-secondary text-secondary-foreground hover:bg-secondary/80\",\n            ghost: \"hover:bg-accent hover:text-accent-foreground\",\n            link: \"underline-offset-4 hover:underline text-primary\"\n        },\n        size: {\n            default: \"h-10 py-2 px-4\",\n            sm: \"h-9 px-3 rounded-md\",\n            lg: \"h-11 px-8 rounded-md\"\n        }\n    },\n    defaultVariants: {\n        variant: \"default\",\n        size: \"default\"\n    }\n});\nconst Button = /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_1__.forwardRef(({ className, variant, size, asChild = false, ...props }, ref)=>{\n    const Comp = asChild ? _radix_ui_react_slot__WEBPACK_IMPORTED_MODULE_2__.Slot : \"button\";\n    return /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(Comp, {\n        className: (0,_lib_utils__WEBPACK_IMPORTED_MODULE_4__.cn)(buttonVariants({\n            variant,\n            size,\n            className\n        })),\n        ref: ref,\n        ...props\n    }, void 0, false, {\n        fileName: \"/Users/afromusedigital/agentive/src/components/ui/button.tsx\",\n        lineNumber: 45,\n        columnNumber: 7\n    }, undefined);\n});\nButton.displayName = \"Button\";\n\n\n__webpack_async_result__();\n} catch(e) { __webpack_async_result__(e); } });//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9zcmMvY29tcG9uZW50cy91aS9idXR0b24udHN4IiwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7Ozs7QUFBOEI7QUFDYTtBQUNzQjtBQUVqQztBQUVoQyxNQUFNSSxpQkFBaUJGLDZEQUFHQSxDQUN4Qix3UUFDQTtJQUNFRyxVQUFVO1FBQ1JDLFNBQVM7WUFDUEMsU0FBUztZQUNUQyxhQUNFO1lBQ0ZDLFNBQ0U7WUFDRkMsV0FDRTtZQUNGQyxPQUFPO1lBQ1BDLE1BQU07UUFDUjtRQUNBQyxNQUFNO1lBQ0pOLFNBQVM7WUFDVE8sSUFBSTtZQUNKQyxJQUFJO1FBQ047SUFDRjtJQUNBQyxpQkFBaUI7UUFDZlYsU0FBUztRQUNUTyxNQUFNO0lBQ1I7QUFDRjtBQVNGLE1BQU1JLHVCQUFTakIsNkNBQWdCLENBQzdCLENBQUMsRUFBRW1CLFNBQVMsRUFBRWIsT0FBTyxFQUFFTyxJQUFJLEVBQUVPLFVBQVUsS0FBSyxFQUFFLEdBQUdDLE9BQU8sRUFBRUM7SUFDeEQsTUFBTUMsT0FBT0gsVUFBVW5CLHNEQUFJQSxHQUFHO0lBQzlCLHFCQUNFLDhEQUFDc0I7UUFDQ0osV0FBV2hCLDhDQUFFQSxDQUFDQyxlQUFlO1lBQUVFO1lBQVNPO1lBQU1NO1FBQVU7UUFDeERHLEtBQUtBO1FBQ0osR0FBR0QsS0FBSzs7Ozs7O0FBR2Y7QUFFRkosT0FBT08sV0FBVyxHQUFHO0FBRVkiLCJzb3VyY2VzIjpbIi9Vc2Vycy9hZnJvbXVzZWRpZ2l0YWwvYWdlbnRpdmUvc3JjL2NvbXBvbmVudHMvdWkvYnV0dG9uLnRzeCJdLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgKiBhcyBSZWFjdCBmcm9tIFwicmVhY3RcIlxuaW1wb3J0IHsgU2xvdCB9IGZyb20gXCJAcmFkaXgtdWkvcmVhY3Qtc2xvdFwiXG5pbXBvcnQgeyBjdmEsIHR5cGUgVmFyaWFudFByb3BzIH0gZnJvbSBcImNsYXNzLXZhcmlhbmNlLWF1dGhvcml0eVwiXG5cbmltcG9ydCB7IGNuIH0gZnJvbSBcIkAvbGliL3V0aWxzXCJcblxuY29uc3QgYnV0dG9uVmFyaWFudHMgPSBjdmEoXG4gIFwiaW5saW5lLWZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHJvdW5kZWQtbWQgdGV4dC1zbSBmb250LW1lZGl1bSB0cmFuc2l0aW9uLWNvbG9ycyBmb2N1cy12aXNpYmxlOm91dGxpbmUtbm9uZSBmb2N1cy12aXNpYmxlOnJpbmctMiBmb2N1cy12aXNpYmxlOnJpbmctcmluZyBmb2N1cy12aXNpYmxlOnJpbmctb2Zmc2V0LTIgZGlzYWJsZWQ6b3BhY2l0eS01MCBkaXNhYmxlZDpwb2ludGVyLWV2ZW50cy1ub25lIHJpbmctb2Zmc2V0LWJhY2tncm91bmRcIixcbiAge1xuICAgIHZhcmlhbnRzOiB7XG4gICAgICB2YXJpYW50OiB7XG4gICAgICAgIGRlZmF1bHQ6IFwiYmctcHJpbWFyeSB0ZXh0LXByaW1hcnktZm9yZWdyb3VuZCBob3ZlcjpiZy1wcmltYXJ5LzkwXCIsXG4gICAgICAgIGRlc3RydWN0aXZlOlxuICAgICAgICAgIFwiYmctZGVzdHJ1Y3RpdmUgdGV4dC1kZXN0cnVjdGl2ZS1mb3JlZ3JvdW5kIGhvdmVyOmJnLWRlc3RydWN0aXZlLzkwXCIsXG4gICAgICAgIG91dGxpbmU6XG4gICAgICAgICAgXCJib3JkZXIgYm9yZGVyLWlucHV0IGhvdmVyOmJnLWFjY2VudCBob3Zlcjp0ZXh0LWFjY2VudC1mb3JlZ3JvdW5kXCIsXG4gICAgICAgIHNlY29uZGFyeTpcbiAgICAgICAgICBcImJnLXNlY29uZGFyeSB0ZXh0LXNlY29uZGFyeS1mb3JlZ3JvdW5kIGhvdmVyOmJnLXNlY29uZGFyeS84MFwiLFxuICAgICAgICBnaG9zdDogXCJob3ZlcjpiZy1hY2NlbnQgaG92ZXI6dGV4dC1hY2NlbnQtZm9yZWdyb3VuZFwiLFxuICAgICAgICBsaW5rOiBcInVuZGVybGluZS1vZmZzZXQtNCBob3Zlcjp1bmRlcmxpbmUgdGV4dC1wcmltYXJ5XCIsXG4gICAgICB9LFxuICAgICAgc2l6ZToge1xuICAgICAgICBkZWZhdWx0OiBcImgtMTAgcHktMiBweC00XCIsXG4gICAgICAgIHNtOiBcImgtOSBweC0zIHJvdW5kZWQtbWRcIixcbiAgICAgICAgbGc6IFwiaC0xMSBweC04IHJvdW5kZWQtbWRcIixcbiAgICAgIH0sXG4gICAgfSxcbiAgICBkZWZhdWx0VmFyaWFudHM6IHtcbiAgICAgIHZhcmlhbnQ6IFwiZGVmYXVsdFwiLFxuICAgICAgc2l6ZTogXCJkZWZhdWx0XCIsXG4gICAgfSxcbiAgfVxuKVxuXG5leHBvcnQgaW50ZXJmYWNlIEJ1dHRvblByb3BzXG4gIGV4dGVuZHMgUmVhY3QuQnV0dG9uSFRNTEF0dHJpYnV0ZXM8SFRNTEJ1dHRvbkVsZW1lbnQ+LFxuICAgIFZhcmlhbnRQcm9wczx0eXBlb2YgYnV0dG9uVmFyaWFudHM+IHtcbiAgYXNDaGlsZD86IGJvb2xlYW5cbn1cblxuY29uc3QgQnV0dG9uID0gUmVhY3QuZm9yd2FyZFJlZjxIVE1MQnV0dG9uRWxlbWVudCwgQnV0dG9uUHJvcHM+KFxuICAoeyBjbGFzc05hbWUsIHZhcmlhbnQsIHNpemUsIGFzQ2hpbGQgPSBmYWxzZSwgLi4ucHJvcHMgfSwgcmVmKSA9PiB7XG4gICAgY29uc3QgQ29tcCA9IGFzQ2hpbGQgPyBTbG90IDogXCJidXR0b25cIlxuICAgIHJldHVybiAoXG4gICAgICA8Q29tcFxuICAgICAgICBjbGFzc05hbWU9e2NuKGJ1dHRvblZhcmlhbnRzKHsgdmFyaWFudCwgc2l6ZSwgY2xhc3NOYW1lIH0pKX1cbiAgICAgICAgcmVmPXtyZWZ9XG4gICAgICAgIHsuLi5wcm9wc31cbiAgICAgIC8+XG4gICAgKVxuICB9XG4pXG5CdXR0b24uZGlzcGxheU5hbWUgPSBcIkJ1dHRvblwiXG5cbmV4cG9ydCB7IEJ1dHRvbiwgYnV0dG9uVmFyaWFudHMgfVxuIl0sIm5hbWVzIjpbIlJlYWN0IiwiU2xvdCIsImN2YSIsImNuIiwiYnV0dG9uVmFyaWFudHMiLCJ2YXJpYW50cyIsInZhcmlhbnQiLCJkZWZhdWx0IiwiZGVzdHJ1Y3RpdmUiLCJvdXRsaW5lIiwic2Vjb25kYXJ5IiwiZ2hvc3QiLCJsaW5rIiwic2l6ZSIsInNtIiwibGciLCJkZWZhdWx0VmFyaWFudHMiLCJCdXR0b24iLCJmb3J3YXJkUmVmIiwiY2xhc3NOYW1lIiwiYXNDaGlsZCIsInByb3BzIiwicmVmIiwiQ29tcCIsImRpc3BsYXlOYW1lIl0sImlnbm9yZUxpc3QiOltdLCJzb3VyY2VSb290IjoiIn0=\n//# sourceURL=webpack-internal:///./src/components/ui/button.tsx\n");
+
+/***/ }),
+
+/***/ "./src/lib/utils.ts":
+/*!**************************!*\
+  !*** ./src/lib/utils.ts ***!
+  \**************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {\n__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   cn: () => (/* binding */ cn)\n/* harmony export */ });\n/* harmony import */ var clsx__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! clsx */ \"clsx\");\n/* harmony import */ var tailwind_merge__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! tailwind-merge */ \"tailwind-merge\");\nvar __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([clsx__WEBPACK_IMPORTED_MODULE_0__, tailwind_merge__WEBPACK_IMPORTED_MODULE_1__]);\n([clsx__WEBPACK_IMPORTED_MODULE_0__, tailwind_merge__WEBPACK_IMPORTED_MODULE_1__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);\n\n\nfunction cn(...inputs) {\n    return (0,tailwind_merge__WEBPACK_IMPORTED_MODULE_1__.twMerge)((0,clsx__WEBPACK_IMPORTED_MODULE_0__.clsx)(inputs));\n}\n\n__webpack_async_result__();\n} catch(e) { __webpack_async_result__(e); } });//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9zcmMvbGliL3V0aWxzLnRzIiwibWFwcGluZ3MiOiI7Ozs7Ozs7OztBQUE0QztBQUNKO0FBRWpDLFNBQVNFLEdBQUcsR0FBR0MsTUFBb0I7SUFDeEMsT0FBT0YsdURBQU9BLENBQUNELDBDQUFJQSxDQUFDRztBQUN0QiIsInNvdXJjZXMiOlsiL1VzZXJzL2Fmcm9tdXNlZGlnaXRhbC9hZ2VudGl2ZS9zcmMvbGliL3V0aWxzLnRzIl0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IHR5cGUgQ2xhc3NWYWx1ZSwgY2xzeCB9IGZyb20gXCJjbHN4XCJcbmltcG9ydCB7IHR3TWVyZ2UgfSBmcm9tIFwidGFpbHdpbmQtbWVyZ2VcIlxuXG5leHBvcnQgZnVuY3Rpb24gY24oLi4uaW5wdXRzOiBDbGFzc1ZhbHVlW10pIHtcbiAgcmV0dXJuIHR3TWVyZ2UoY2xzeChpbnB1dHMpKVxufSAiXSwibmFtZXMiOlsiY2xzeCIsInR3TWVyZ2UiLCJjbiIsImlucHV0cyJdLCJpZ25vcmVMaXN0IjpbXSwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///./src/lib/utils.ts\n");
 
 /***/ }),
 
@@ -52,7 +85,18 @@ eval("__webpack_require__.a(module, async (__webpack_handle_async_dependencies__
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {\n__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (/* binding */ Home)\n/* harmony export */ });\n/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-dev-runtime */ \"react/jsx-dev-runtime\");\n/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ \"react\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var next_dynamic__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! next/dynamic */ \"./node_modules/next/dynamic.js\");\n/* harmony import */ var next_dynamic__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_dynamic__WEBPACK_IMPORTED_MODULE_2__);\n/* harmony import */ var framer_motion__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! framer-motion */ \"framer-motion\");\nvar __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([framer_motion__WEBPACK_IMPORTED_MODULE_3__]);\nframer_motion__WEBPACK_IMPORTED_MODULE_3__ = (__webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__)[0];\n// pages/index.tsx\n\n\n\n\nconst MusicLabelDashboard = next_dynamic__WEBPACK_IMPORTED_MODULE_2___default()(()=>Promise.all(/*! import() */[__webpack_require__.e(\"vendor-chunks/@copilotkit\"), __webpack_require__.e(\"src_components_MusicLabelDashboard_tsx\")]).then(__webpack_require__.bind(__webpack_require__, /*! ../components/MusicLabelDashboard */ \"./src/components/MusicLabelDashboard.tsx\")), {\n    loadableGenerated: {\n        modules: [\n            \"pages/index.tsx -> \" + \"../components/MusicLabelDashboard\"\n        ]\n    },\n    ssr: false\n});\nconst pageVariants = {\n    initial: {\n        opacity: 0,\n        scale: 0.98\n    },\n    animate: {\n        opacity: 1,\n        scale: 1,\n        transition: {\n            duration: 0.8,\n            ease: [\n                0.6,\n                -0.05,\n                0.01,\n                0.99\n            ]\n        }\n    },\n    exit: {\n        opacity: 0,\n        scale: 0.96,\n        transition: {\n            duration: 0.5\n        }\n    }\n};\nconst backgroundVariants = {\n    initial: {\n        backgroundPosition: \"0% 0%\"\n    },\n    animate: {\n        backgroundPosition: \"100% 100%\",\n        transition: {\n            duration: 20,\n            repeat: Infinity,\n            repeatType: \"reverse\"\n        }\n    }\n};\nfunction Home() {\n    return /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(framer_motion__WEBPACK_IMPORTED_MODULE_3__.motion.div, {\n        className: \"min-h-screen relative overflow-hidden\",\n        initial: \"initial\",\n        animate: \"animate\",\n        exit: \"exit\",\n        variants: pageVariants,\n        children: [\n            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(framer_motion__WEBPACK_IMPORTED_MODULE_3__.motion.div, {\n                className: \"absolute inset-0 bg-gradient-to-br from-blue-50 via-gray-50 to-purple-50\",\n                variants: backgroundVariants,\n                style: {\n                    backgroundSize: \"400% 400%\",\n                    filter: \"blur(40px)\",\n                    opacity: 0.7,\n                    zIndex: -1\n                }\n            }, void 0, false, {\n                fileName: \"/Users/afromusedigital/agentive/src/pages/index.tsx\",\n                lineNumber: 57,\n                columnNumber: 7\n            }, this),\n            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(framer_motion__WEBPACK_IMPORTED_MODULE_3__.motion.div, {\n                className: \"relative z-10\",\n                initial: {\n                    y: 20,\n                    opacity: 0\n                },\n                animate: {\n                    y: 0,\n                    opacity: 1\n                },\n                transition: {\n                    delay: 0.2\n                },\n                children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(MusicLabelDashboard, {}, void 0, false, {\n                    fileName: \"/Users/afromusedigital/agentive/src/pages/index.tsx\",\n                    lineNumber: 74,\n                    columnNumber: 9\n                }, this)\n            }, void 0, false, {\n                fileName: \"/Users/afromusedigital/agentive/src/pages/index.tsx\",\n                lineNumber: 68,\n                columnNumber: 7\n            }, this)\n        ]\n    }, void 0, true, {\n        fileName: \"/Users/afromusedigital/agentive/src/pages/index.tsx\",\n        lineNumber: 49,\n        columnNumber: 5\n    }, this);\n}\n\n__webpack_async_result__();\n} catch(e) { __webpack_async_result__(e); } });//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9zcmMvcGFnZXMvaW5kZXgudHN4IiwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7O0FBQUEsa0JBQWtCOztBQUNRO0FBQ1M7QUFDYztBQUVqRCxNQUFNRyxzQkFBc0JGLG1EQUFPQSxDQUNqQyxJQUFNLDBSQUEyQzs7Ozs7O0lBQy9DRyxLQUFLOztBQUdULE1BQU1DLGVBQXlCO0lBQzdCQyxTQUFTO1FBQ1BDLFNBQVM7UUFDVEMsT0FBTztJQUNUO0lBQ0FDLFNBQVM7UUFDUEYsU0FBUztRQUNUQyxPQUFPO1FBQ1BFLFlBQVk7WUFDVkMsVUFBVTtZQUNWQyxNQUFNO2dCQUFDO2dCQUFLLENBQUM7Z0JBQU07Z0JBQU07YUFBSztRQUNoQztJQUNGO0lBQ0FDLE1BQU07UUFDSk4sU0FBUztRQUNUQyxPQUFPO1FBQ1BFLFlBQVk7WUFDVkMsVUFBVTtRQUNaO0lBQ0Y7QUFDRjtBQUVBLE1BQU1HLHFCQUErQjtJQUNuQ1IsU0FBUztRQUNQUyxvQkFBb0I7SUFDdEI7SUFDQU4sU0FBUztRQUNQTSxvQkFBb0I7UUFDcEJMLFlBQVk7WUFDVkMsVUFBVTtZQUNWSyxRQUFRQztZQUNSQyxZQUFZO1FBQ2Q7SUFDRjtBQUNGO0FBRWUsU0FBU0M7SUFDdEIscUJBQ0UsOERBQUNqQixpREFBTUEsQ0FBQ2tCLEdBQUc7UUFDVEMsV0FBVTtRQUNWZixTQUFRO1FBQ1JHLFNBQVE7UUFDUkksTUFBSztRQUNMUyxVQUFVakI7OzBCQUdWLDhEQUFDSCxpREFBTUEsQ0FBQ2tCLEdBQUc7Z0JBQ1RDLFdBQVU7Z0JBQ1ZDLFVBQVVSO2dCQUNWUyxPQUFPO29CQUNMQyxnQkFBZ0I7b0JBQ2hCQyxRQUFRO29CQUNSbEIsU0FBUztvQkFDVG1CLFFBQVEsQ0FBQztnQkFDWDs7Ozs7OzBCQUdGLDhEQUFDeEIsaURBQU1BLENBQUNrQixHQUFHO2dCQUNUQyxXQUFVO2dCQUNWZixTQUFTO29CQUFFcUIsR0FBRztvQkFBSXBCLFNBQVM7Z0JBQUU7Z0JBQzdCRSxTQUFTO29CQUFFa0IsR0FBRztvQkFBR3BCLFNBQVM7Z0JBQUU7Z0JBQzVCRyxZQUFZO29CQUFFa0IsT0FBTztnQkFBSTswQkFFekIsNEVBQUN6Qjs7Ozs7Ozs7Ozs7Ozs7OztBQUlUIiwic291cmNlcyI6WyIvVXNlcnMvYWZyb211c2VkaWdpdGFsL2FnZW50aXZlL3NyYy9wYWdlcy9pbmRleC50c3giXSwic291cmNlc0NvbnRlbnQiOlsiLy8gcGFnZXMvaW5kZXgudHN4XG5pbXBvcnQgUmVhY3QgZnJvbSAncmVhY3QnO1xuaW1wb3J0IGR5bmFtaWMgZnJvbSAnbmV4dC9keW5hbWljJztcbmltcG9ydCB7IG1vdGlvbiwgVmFyaWFudHMgfSBmcm9tIFwiZnJhbWVyLW1vdGlvblwiO1xuXG5jb25zdCBNdXNpY0xhYmVsRGFzaGJvYXJkID0gZHluYW1pYyhcbiAgKCkgPT4gaW1wb3J0KCcuLi9jb21wb25lbnRzL011c2ljTGFiZWxEYXNoYm9hcmQnKSxcbiAgeyBzc3I6IGZhbHNlIH1cbik7XG5cbmNvbnN0IHBhZ2VWYXJpYW50czogVmFyaWFudHMgPSB7XG4gIGluaXRpYWw6IHtcbiAgICBvcGFjaXR5OiAwLFxuICAgIHNjYWxlOiAwLjk4XG4gIH0sXG4gIGFuaW1hdGU6IHtcbiAgICBvcGFjaXR5OiAxLFxuICAgIHNjYWxlOiAxLFxuICAgIHRyYW5zaXRpb246IHtcbiAgICAgIGR1cmF0aW9uOiAwLjgsXG4gICAgICBlYXNlOiBbMC42LCAtMC4wNSwgMC4wMSwgMC45OV1cbiAgICB9XG4gIH0sXG4gIGV4aXQ6IHtcbiAgICBvcGFjaXR5OiAwLFxuICAgIHNjYWxlOiAwLjk2LFxuICAgIHRyYW5zaXRpb246IHtcbiAgICAgIGR1cmF0aW9uOiAwLjVcbiAgICB9XG4gIH1cbn07XG5cbmNvbnN0IGJhY2tncm91bmRWYXJpYW50czogVmFyaWFudHMgPSB7XG4gIGluaXRpYWw6IHtcbiAgICBiYWNrZ3JvdW5kUG9zaXRpb246IFwiMCUgMCVcIlxuICB9LFxuICBhbmltYXRlOiB7XG4gICAgYmFja2dyb3VuZFBvc2l0aW9uOiBcIjEwMCUgMTAwJVwiLFxuICAgIHRyYW5zaXRpb246IHtcbiAgICAgIGR1cmF0aW9uOiAyMCxcbiAgICAgIHJlcGVhdDogSW5maW5pdHksXG4gICAgICByZXBlYXRUeXBlOiBcInJldmVyc2VcIiBhcyBjb25zdFxuICAgIH1cbiAgfVxufTtcblxuZXhwb3J0IGRlZmF1bHQgZnVuY3Rpb24gSG9tZSgpIHtcbiAgcmV0dXJuIChcbiAgICA8bW90aW9uLmRpdlxuICAgICAgY2xhc3NOYW1lPVwibWluLWgtc2NyZWVuIHJlbGF0aXZlIG92ZXJmbG93LWhpZGRlblwiXG4gICAgICBpbml0aWFsPVwiaW5pdGlhbFwiXG4gICAgICBhbmltYXRlPVwiYW5pbWF0ZVwiXG4gICAgICBleGl0PVwiZXhpdFwiXG4gICAgICB2YXJpYW50cz17cGFnZVZhcmlhbnRzfVxuICAgID5cbiAgICAgIHsvKiBBbmltYXRlZCBiYWNrZ3JvdW5kIGdyYWRpZW50ICovfVxuICAgICAgPG1vdGlvbi5kaXZcbiAgICAgICAgY2xhc3NOYW1lPVwiYWJzb2x1dGUgaW5zZXQtMCBiZy1ncmFkaWVudC10by1iciBmcm9tLWJsdWUtNTAgdmlhLWdyYXktNTAgdG8tcHVycGxlLTUwXCJcbiAgICAgICAgdmFyaWFudHM9e2JhY2tncm91bmRWYXJpYW50c31cbiAgICAgICAgc3R5bGU9e3sgXG4gICAgICAgICAgYmFja2dyb3VuZFNpemU6IFwiNDAwJSA0MDAlXCIsXG4gICAgICAgICAgZmlsdGVyOiBcImJsdXIoNDBweClcIixcbiAgICAgICAgICBvcGFjaXR5OiAwLjcsXG4gICAgICAgICAgekluZGV4OiAtMVxuICAgICAgICB9fVxuICAgICAgLz5cbiAgICAgIFxuICAgICAgPG1vdGlvbi5kaXYgXG4gICAgICAgIGNsYXNzTmFtZT1cInJlbGF0aXZlIHotMTBcIlxuICAgICAgICBpbml0aWFsPXt7IHk6IDIwLCBvcGFjaXR5OiAwIH19XG4gICAgICAgIGFuaW1hdGU9e3sgeTogMCwgb3BhY2l0eTogMSB9fVxuICAgICAgICB0cmFuc2l0aW9uPXt7IGRlbGF5OiAwLjIgfX1cbiAgICAgID5cbiAgICAgICAgPE11c2ljTGFiZWxEYXNoYm9hcmQgLz5cbiAgICAgIDwvbW90aW9uLmRpdj5cbiAgICA8L21vdGlvbi5kaXY+XG4gICk7XG59Il0sIm5hbWVzIjpbIlJlYWN0IiwiZHluYW1pYyIsIm1vdGlvbiIsIk11c2ljTGFiZWxEYXNoYm9hcmQiLCJzc3IiLCJwYWdlVmFyaWFudHMiLCJpbml0aWFsIiwib3BhY2l0eSIsInNjYWxlIiwiYW5pbWF0ZSIsInRyYW5zaXRpb24iLCJkdXJhdGlvbiIsImVhc2UiLCJleGl0IiwiYmFja2dyb3VuZFZhcmlhbnRzIiwiYmFja2dyb3VuZFBvc2l0aW9uIiwicmVwZWF0IiwiSW5maW5pdHkiLCJyZXBlYXRUeXBlIiwiSG9tZSIsImRpdiIsImNsYXNzTmFtZSIsInZhcmlhbnRzIiwic3R5bGUiLCJiYWNrZ3JvdW5kU2l6ZSIsImZpbHRlciIsInpJbmRleCIsInkiLCJkZWxheSJdLCJpZ25vcmVMaXN0IjpbXSwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///./src/pages/index.tsx\n");
+eval("__webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {\n__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (/* binding */ Home)\n/* harmony export */ });\n/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-dev-runtime */ \"react/jsx-dev-runtime\");\n/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ \"react\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var next_dynamic__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! next/dynamic */ \"./node_modules/next/dynamic.js\");\n/* harmony import */ var next_dynamic__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_dynamic__WEBPACK_IMPORTED_MODULE_2__);\n/* harmony import */ var framer_motion__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! framer-motion */ \"framer-motion\");\n/* harmony import */ var _components_AgentiveWorkflow__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/AgentiveWorkflow */ \"./src/components/AgentiveWorkflow.tsx\");\nvar __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([framer_motion__WEBPACK_IMPORTED_MODULE_3__, _components_AgentiveWorkflow__WEBPACK_IMPORTED_MODULE_4__]);\n([framer_motion__WEBPACK_IMPORTED_MODULE_3__, _components_AgentiveWorkflow__WEBPACK_IMPORTED_MODULE_4__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);\n// pages/index.tsx\n/* __next_internal_client_entry_do_not_use__ default auto */ \n\n\n\n\nconst MusicLabelDashboard = next_dynamic__WEBPACK_IMPORTED_MODULE_2___default()(()=>Promise.all(/*! import() */[__webpack_require__.e(\"vendor-chunks/@copilotkit\"), __webpack_require__.e(\"src_components_MusicLabelDashboard_tsx\")]).then(__webpack_require__.bind(__webpack_require__, /*! ../components/MusicLabelDashboard */ \"./src/components/MusicLabelDashboard.tsx\")), {\n    loadableGenerated: {\n        modules: [\n            \"pages/index.tsx -> \" + \"../components/MusicLabelDashboard\"\n        ]\n    },\n    ssr: false\n});\nconst pageVariants = {\n    initial: {\n        opacity: 0,\n        scale: 0.98\n    },\n    animate: {\n        opacity: 1,\n        scale: 1,\n        transition: {\n            duration: 0.8,\n            ease: [\n                0.6,\n                -0.05,\n                0.01,\n                0.99\n            ]\n        }\n    },\n    exit: {\n        opacity: 0,\n        scale: 0.96,\n        transition: {\n            duration: 0.5\n        }\n    }\n};\nconst backgroundVariants = {\n    initial: {\n        backgroundPosition: \"0% 0%\"\n    },\n    animate: {\n        backgroundPosition: \"100% 100%\",\n        transition: {\n            duration: 20,\n            repeat: Infinity,\n            repeatType: \"reverse\"\n        }\n    }\n};\nfunction Home() {\n    return /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(framer_motion__WEBPACK_IMPORTED_MODULE_3__.motion.div, {\n        className: \"min-h-screen relative overflow-hidden\",\n        initial: \"initial\",\n        animate: \"animate\",\n        exit: \"exit\",\n        variants: pageVariants,\n        children: [\n            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(framer_motion__WEBPACK_IMPORTED_MODULE_3__.motion.div, {\n                className: \"absolute inset-0 bg-gradient-to-br from-blue-50 via-gray-50 to-purple-50\",\n                variants: backgroundVariants,\n                style: {\n                    backgroundSize: \"400% 400%\",\n                    filter: \"blur(40px)\",\n                    opacity: 0.7,\n                    zIndex: -1\n                }\n            }, void 0, false, {\n                fileName: \"/Users/afromusedigital/agentive/src/pages/index.tsx\",\n                lineNumber: 61,\n                columnNumber: 7\n            }, this),\n            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(framer_motion__WEBPACK_IMPORTED_MODULE_3__.motion.div, {\n                className: \"relative z-10\",\n                initial: {\n                    y: 20,\n                    opacity: 0\n                },\n                animate: {\n                    y: 0,\n                    opacity: 1\n                },\n                transition: {\n                    delay: 0.2\n                },\n                children: [\n                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(MusicLabelDashboard, {}, void 0, false, {\n                        fileName: \"/Users/afromusedigital/agentive/src/pages/index.tsx\",\n                        lineNumber: 78,\n                        columnNumber: 9\n                    }, this),\n                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_AgentiveWorkflow__WEBPACK_IMPORTED_MODULE_4__.AgentiveWorkflow, {}, void 0, false, {\n                        fileName: \"/Users/afromusedigital/agentive/src/pages/index.tsx\",\n                        lineNumber: 79,\n                        columnNumber: 9\n                    }, this)\n                ]\n            }, void 0, true, {\n                fileName: \"/Users/afromusedigital/agentive/src/pages/index.tsx\",\n                lineNumber: 72,\n                columnNumber: 7\n            }, this)\n        ]\n    }, void 0, true, {\n        fileName: \"/Users/afromusedigital/agentive/src/pages/index.tsx\",\n        lineNumber: 53,\n        columnNumber: 5\n    }, this);\n}\n\n__webpack_async_result__();\n} catch(e) { __webpack_async_result__(e); } });//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9zcmMvcGFnZXMvaW5kZXgudHN4IiwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7OztBQUFBLGtCQUFrQjs7QUFHc0I7QUFDTDtBQUNjO0FBRWlCO0FBRWxFLE1BQU1JLHNCQUFzQkgsbURBQU9BLENBQ2pDLElBQU0sMFJBQTJDOzs7Ozs7SUFDL0NJLEtBQUs7O0FBR1QsTUFBTUMsZUFBeUI7SUFDN0JDLFNBQVM7UUFDUEMsU0FBUztRQUNUQyxPQUFPO0lBQ1Q7SUFDQUMsU0FBUztRQUNQRixTQUFTO1FBQ1RDLE9BQU87UUFDUEUsWUFBWTtZQUNWQyxVQUFVO1lBQ1ZDLE1BQU07Z0JBQUM7Z0JBQUssQ0FBQztnQkFBTTtnQkFBTTthQUFLO1FBQ2hDO0lBQ0Y7SUFDQUMsTUFBTTtRQUNKTixTQUFTO1FBQ1RDLE9BQU87UUFDUEUsWUFBWTtZQUNWQyxVQUFVO1FBQ1o7SUFDRjtBQUNGO0FBRUEsTUFBTUcscUJBQStCO0lBQ25DUixTQUFTO1FBQ1BTLG9CQUFvQjtJQUN0QjtJQUNBTixTQUFTO1FBQ1BNLG9CQUFvQjtRQUNwQkwsWUFBWTtZQUNWQyxVQUFVO1lBQ1ZLLFFBQVFDO1lBQ1JDLFlBQVk7UUFDZDtJQUNGO0FBQ0Y7QUFFZSxTQUFTQztJQUN0QixxQkFDRSw4REFBQ2xCLGlEQUFNQSxDQUFDbUIsR0FBRztRQUNUQyxXQUFVO1FBQ1ZmLFNBQVE7UUFDUkcsU0FBUTtRQUNSSSxNQUFLO1FBQ0xTLFVBQVVqQjs7MEJBR1YsOERBQUNKLGlEQUFNQSxDQUFDbUIsR0FBRztnQkFDVEMsV0FBVTtnQkFDVkMsVUFBVVI7Z0JBQ1ZTLE9BQU87b0JBQ0xDLGdCQUFnQjtvQkFDaEJDLFFBQVE7b0JBQ1JsQixTQUFTO29CQUNUbUIsUUFBUSxDQUFDO2dCQUNYOzs7Ozs7MEJBR0YsOERBQUN6QixpREFBTUEsQ0FBQ21CLEdBQUc7Z0JBQ1RDLFdBQVU7Z0JBQ1ZmLFNBQVM7b0JBQUVxQixHQUFHO29CQUFJcEIsU0FBUztnQkFBRTtnQkFDN0JFLFNBQVM7b0JBQUVrQixHQUFHO29CQUFHcEIsU0FBUztnQkFBRTtnQkFDNUJHLFlBQVk7b0JBQUVrQixPQUFPO2dCQUFJOztrQ0FFekIsOERBQUN6Qjs7Ozs7a0NBQ0QsOERBQUNELDBFQUFnQkE7Ozs7Ozs7Ozs7Ozs7Ozs7O0FBSXpCIiwic291cmNlcyI6WyIvVXNlcnMvYWZyb211c2VkaWdpdGFsL2FnZW50aXZlL3NyYy9wYWdlcy9pbmRleC50c3giXSwic291cmNlc0NvbnRlbnQiOlsiLy8gcGFnZXMvaW5kZXgudHN4XG4ndXNlIGNsaWVudCc7XG5cbmltcG9ydCBSZWFjdCwgeyB1c2VTdGF0ZSB9IGZyb20gJ3JlYWN0JztcbmltcG9ydCBkeW5hbWljIGZyb20gJ25leHQvZHluYW1pYyc7XG5pbXBvcnQgeyBtb3Rpb24sIFZhcmlhbnRzIH0gZnJvbSBcImZyYW1lci1tb3Rpb25cIjtcbmltcG9ydCB7IEFnZW50aXZlU2VydmljZXMgfSBmcm9tICcuLi9jb21wb25lbnRzL0FnZW50aXZlU2VydmljZXMnO1xuaW1wb3J0IHsgQWdlbnRpdmVXb3JrZmxvdyB9IGZyb20gJy4uL2NvbXBvbmVudHMvQWdlbnRpdmVXb3JrZmxvdyc7XG5cbmNvbnN0IE11c2ljTGFiZWxEYXNoYm9hcmQgPSBkeW5hbWljKFxuICAoKSA9PiBpbXBvcnQoJy4uL2NvbXBvbmVudHMvTXVzaWNMYWJlbERhc2hib2FyZCcpLFxuICB7IHNzcjogZmFsc2UgfVxuKTtcblxuY29uc3QgcGFnZVZhcmlhbnRzOiBWYXJpYW50cyA9IHtcbiAgaW5pdGlhbDoge1xuICAgIG9wYWNpdHk6IDAsXG4gICAgc2NhbGU6IDAuOThcbiAgfSxcbiAgYW5pbWF0ZToge1xuICAgIG9wYWNpdHk6IDEsXG4gICAgc2NhbGU6IDEsXG4gICAgdHJhbnNpdGlvbjoge1xuICAgICAgZHVyYXRpb246IDAuOCxcbiAgICAgIGVhc2U6IFswLjYsIC0wLjA1LCAwLjAxLCAwLjk5XVxuICAgIH1cbiAgfSxcbiAgZXhpdDoge1xuICAgIG9wYWNpdHk6IDAsXG4gICAgc2NhbGU6IDAuOTYsXG4gICAgdHJhbnNpdGlvbjoge1xuICAgICAgZHVyYXRpb246IDAuNVxuICAgIH1cbiAgfVxufTtcblxuY29uc3QgYmFja2dyb3VuZFZhcmlhbnRzOiBWYXJpYW50cyA9IHtcbiAgaW5pdGlhbDoge1xuICAgIGJhY2tncm91bmRQb3NpdGlvbjogXCIwJSAwJVwiXG4gIH0sXG4gIGFuaW1hdGU6IHtcbiAgICBiYWNrZ3JvdW5kUG9zaXRpb246IFwiMTAwJSAxMDAlXCIsXG4gICAgdHJhbnNpdGlvbjoge1xuICAgICAgZHVyYXRpb246IDIwLFxuICAgICAgcmVwZWF0OiBJbmZpbml0eSxcbiAgICAgIHJlcGVhdFR5cGU6IFwicmV2ZXJzZVwiIGFzIGNvbnN0XG4gICAgfVxuICB9XG59O1xuXG5leHBvcnQgZGVmYXVsdCBmdW5jdGlvbiBIb21lKCkge1xuICByZXR1cm4gKFxuICAgIDxtb3Rpb24uZGl2XG4gICAgICBjbGFzc05hbWU9XCJtaW4taC1zY3JlZW4gcmVsYXRpdmUgb3ZlcmZsb3ctaGlkZGVuXCJcbiAgICAgIGluaXRpYWw9XCJpbml0aWFsXCJcbiAgICAgIGFuaW1hdGU9XCJhbmltYXRlXCJcbiAgICAgIGV4aXQ9XCJleGl0XCJcbiAgICAgIHZhcmlhbnRzPXtwYWdlVmFyaWFudHN9XG4gICAgPlxuICAgICAgey8qIEFuaW1hdGVkIGJhY2tncm91bmQgZ3JhZGllbnQgKi99XG4gICAgICA8bW90aW9uLmRpdlxuICAgICAgICBjbGFzc05hbWU9XCJhYnNvbHV0ZSBpbnNldC0wIGJnLWdyYWRpZW50LXRvLWJyIGZyb20tYmx1ZS01MCB2aWEtZ3JheS01MCB0by1wdXJwbGUtNTBcIlxuICAgICAgICB2YXJpYW50cz17YmFja2dyb3VuZFZhcmlhbnRzfVxuICAgICAgICBzdHlsZT17eyBcbiAgICAgICAgICBiYWNrZ3JvdW5kU2l6ZTogXCI0MDAlIDQwMCVcIixcbiAgICAgICAgICBmaWx0ZXI6IFwiYmx1cig0MHB4KVwiLFxuICAgICAgICAgIG9wYWNpdHk6IDAuNyxcbiAgICAgICAgICB6SW5kZXg6IC0xXG4gICAgICAgIH19XG4gICAgICAvPlxuICAgICAgXG4gICAgICA8bW90aW9uLmRpdiBcbiAgICAgICAgY2xhc3NOYW1lPVwicmVsYXRpdmUgei0xMFwiXG4gICAgICAgIGluaXRpYWw9e3sgeTogMjAsIG9wYWNpdHk6IDAgfX1cbiAgICAgICAgYW5pbWF0ZT17eyB5OiAwLCBvcGFjaXR5OiAxIH19XG4gICAgICAgIHRyYW5zaXRpb249e3sgZGVsYXk6IDAuMiB9fVxuICAgICAgPlxuICAgICAgICA8TXVzaWNMYWJlbERhc2hib2FyZCAvPlxuICAgICAgICA8QWdlbnRpdmVXb3JrZmxvdyAvPlxuICAgICAgPC9tb3Rpb24uZGl2PlxuICAgIDwvbW90aW9uLmRpdj5cbiAgKTtcbn0iXSwibmFtZXMiOlsiUmVhY3QiLCJkeW5hbWljIiwibW90aW9uIiwiQWdlbnRpdmVXb3JrZmxvdyIsIk11c2ljTGFiZWxEYXNoYm9hcmQiLCJzc3IiLCJwYWdlVmFyaWFudHMiLCJpbml0aWFsIiwib3BhY2l0eSIsInNjYWxlIiwiYW5pbWF0ZSIsInRyYW5zaXRpb24iLCJkdXJhdGlvbiIsImVhc2UiLCJleGl0IiwiYmFja2dyb3VuZFZhcmlhbnRzIiwiYmFja2dyb3VuZFBvc2l0aW9uIiwicmVwZWF0IiwiSW5maW5pdHkiLCJyZXBlYXRUeXBlIiwiSG9tZSIsImRpdiIsImNsYXNzTmFtZSIsInZhcmlhbnRzIiwic3R5bGUiLCJiYWNrZ3JvdW5kU2l6ZSIsImZpbHRlciIsInpJbmRleCIsInkiLCJkZWxheSJdLCJpZ25vcmVMaXN0IjpbXSwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///./src/pages/index.tsx\n");
+
+/***/ }),
+
+/***/ "./src/services/agentPrompts.ts":
+/*!**************************************!*\
+  !*** ./src/services/agentPrompts.ts ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   agentPrompts: () => (/* binding */ agentPrompts)\n/* harmony export */ });\nconst agentPrompts = {\n    distribution: {\n        initial: `As a Distribution Strategist, I specialize in:\n- Platform selection and optimization\n- Release timing strategies\n- Territory-specific planning\n- Digital service provider relationships\n\nHow can I help optimize your music distribution strategy?`,\n        analyze: (project)=>`\nAnalyzing distribution strategy for:\n- Artist: ${project.artistName}\n- Genre: ${project.genre}\n- Target Markets: ${project.markets}\n\nI'll consider:\n1. Platform-specific audience demographics\n2. Release timing optimization\n3. Territory-specific strategies\n4. Cross-platform promotion opportunities\n    `\n    },\n    marketing: {\n        initial: `As your Marketing Director, I focus on:\n- Campaign strategy development\n- Budget optimization\n- Social media planning\n- Influencer partnerships\n\nWhat aspects of your marketing strategy would you like to explore?`,\n        analyze: (project)=>`\nDeveloping marketing strategy for:\n- Campaign Goals: ${project.goals}\n- Budget: ${project.budget}\n- Timeline: ${project.timeline}\n\nI'll create:\n1. Platform-specific content strategy\n2. Influencer outreach plan\n3. Paid advertising recommendations\n4. Performance metrics framework\n    `\n    },\n    playlist: {\n        initial: `As a Playlist Curator, I specialize in:\n- Playlist strategy development\n- Genre-specific targeting\n- Curator relationship building\n- Playlist performance analytics\n\nHow can I help optimize your playlist submission strategy?`,\n        analyze: (project)=>`\nCreating playlist strategy for:\n- Genre: ${project.genre}\n- Style: ${project.style}\n- Target Playlists: ${project.targetPlaylists}\n\nI'll focus on:\n1. Playlist match analysis\n2. Submission timeline\n3. Curator outreach strategy\n4. Performance tracking\n    `\n    }\n};\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9zcmMvc2VydmljZXMvYWdlbnRQcm9tcHRzLnRzIiwibWFwcGluZ3MiOiI7Ozs7QUFBTyxNQUFNQSxlQUFlO0lBQzFCQyxjQUFjO1FBQ1pDLFNBQVMsQ0FBQzs7Ozs7O3lEQU0yQyxDQUFDO1FBRXREQyxTQUFTLENBQUNDLFVBQWlCLENBQUM7O1VBRXRCLEVBQUVBLFFBQVFDLFVBQVUsQ0FBQztTQUN0QixFQUFFRCxRQUFRRSxLQUFLLENBQUM7a0JBQ1AsRUFBRUYsUUFBUUcsT0FBTyxDQUFDOzs7Ozs7O0lBT2hDLENBQUM7SUFDSDtJQUVBQyxXQUFXO1FBQ1ROLFNBQVMsQ0FBQzs7Ozs7O2tFQU1vRCxDQUFDO1FBRS9EQyxTQUFTLENBQUNDLFVBQWlCLENBQUM7O2tCQUVkLEVBQUVBLFFBQVFLLEtBQUssQ0FBQztVQUN4QixFQUFFTCxRQUFRTSxNQUFNLENBQUM7WUFDZixFQUFFTixRQUFRTyxRQUFRLENBQUM7Ozs7Ozs7SUFPM0IsQ0FBQztJQUNIO0lBRUFDLFVBQVU7UUFDUlYsU0FBUyxDQUFDOzs7Ozs7MERBTTRDLENBQUM7UUFFdkRDLFNBQVMsQ0FBQ0MsVUFBaUIsQ0FBQzs7U0FFdkIsRUFBRUEsUUFBUUUsS0FBSyxDQUFDO1NBQ2hCLEVBQUVGLFFBQVFTLEtBQUssQ0FBQztvQkFDTCxFQUFFVCxRQUFRVSxlQUFlLENBQUM7Ozs7Ozs7SUFPMUMsQ0FBQztJQUNIO0FBQ0YsRUFBRSIsInNvdXJjZXMiOlsiL1VzZXJzL2Fmcm9tdXNlZGlnaXRhbC9hZ2VudGl2ZS9zcmMvc2VydmljZXMvYWdlbnRQcm9tcHRzLnRzIl0sInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCBjb25zdCBhZ2VudFByb21wdHMgPSB7XG4gIGRpc3RyaWJ1dGlvbjoge1xuICAgIGluaXRpYWw6IGBBcyBhIERpc3RyaWJ1dGlvbiBTdHJhdGVnaXN0LCBJIHNwZWNpYWxpemUgaW46XG4tIFBsYXRmb3JtIHNlbGVjdGlvbiBhbmQgb3B0aW1pemF0aW9uXG4tIFJlbGVhc2UgdGltaW5nIHN0cmF0ZWdpZXNcbi0gVGVycml0b3J5LXNwZWNpZmljIHBsYW5uaW5nXG4tIERpZ2l0YWwgc2VydmljZSBwcm92aWRlciByZWxhdGlvbnNoaXBzXG5cbkhvdyBjYW4gSSBoZWxwIG9wdGltaXplIHlvdXIgbXVzaWMgZGlzdHJpYnV0aW9uIHN0cmF0ZWd5P2AsXG4gICAgXG4gICAgYW5hbHl6ZTogKHByb2plY3Q6IGFueSkgPT4gYFxuQW5hbHl6aW5nIGRpc3RyaWJ1dGlvbiBzdHJhdGVneSBmb3I6XG4tIEFydGlzdDogJHtwcm9qZWN0LmFydGlzdE5hbWV9XG4tIEdlbnJlOiAke3Byb2plY3QuZ2VucmV9XG4tIFRhcmdldCBNYXJrZXRzOiAke3Byb2plY3QubWFya2V0c31cblxuSSdsbCBjb25zaWRlcjpcbjEuIFBsYXRmb3JtLXNwZWNpZmljIGF1ZGllbmNlIGRlbW9ncmFwaGljc1xuMi4gUmVsZWFzZSB0aW1pbmcgb3B0aW1pemF0aW9uXG4zLiBUZXJyaXRvcnktc3BlY2lmaWMgc3RyYXRlZ2llc1xuNC4gQ3Jvc3MtcGxhdGZvcm0gcHJvbW90aW9uIG9wcG9ydHVuaXRpZXNcbiAgICBgXG4gIH0sXG5cbiAgbWFya2V0aW5nOiB7XG4gICAgaW5pdGlhbDogYEFzIHlvdXIgTWFya2V0aW5nIERpcmVjdG9yLCBJIGZvY3VzIG9uOlxuLSBDYW1wYWlnbiBzdHJhdGVneSBkZXZlbG9wbWVudFxuLSBCdWRnZXQgb3B0aW1pemF0aW9uXG4tIFNvY2lhbCBtZWRpYSBwbGFubmluZ1xuLSBJbmZsdWVuY2VyIHBhcnRuZXJzaGlwc1xuXG5XaGF0IGFzcGVjdHMgb2YgeW91ciBtYXJrZXRpbmcgc3RyYXRlZ3kgd291bGQgeW91IGxpa2UgdG8gZXhwbG9yZT9gLFxuICAgIFxuICAgIGFuYWx5emU6IChwcm9qZWN0OiBhbnkpID0+IGBcbkRldmVsb3BpbmcgbWFya2V0aW5nIHN0cmF0ZWd5IGZvcjpcbi0gQ2FtcGFpZ24gR29hbHM6ICR7cHJvamVjdC5nb2Fsc31cbi0gQnVkZ2V0OiAke3Byb2plY3QuYnVkZ2V0fVxuLSBUaW1lbGluZTogJHtwcm9qZWN0LnRpbWVsaW5lfVxuXG5JJ2xsIGNyZWF0ZTpcbjEuIFBsYXRmb3JtLXNwZWNpZmljIGNvbnRlbnQgc3RyYXRlZ3lcbjIuIEluZmx1ZW5jZXIgb3V0cmVhY2ggcGxhblxuMy4gUGFpZCBhZHZlcnRpc2luZyByZWNvbW1lbmRhdGlvbnNcbjQuIFBlcmZvcm1hbmNlIG1ldHJpY3MgZnJhbWV3b3JrXG4gICAgYFxuICB9LFxuXG4gIHBsYXlsaXN0OiB7XG4gICAgaW5pdGlhbDogYEFzIGEgUGxheWxpc3QgQ3VyYXRvciwgSSBzcGVjaWFsaXplIGluOlxuLSBQbGF5bGlzdCBzdHJhdGVneSBkZXZlbG9wbWVudFxuLSBHZW5yZS1zcGVjaWZpYyB0YXJnZXRpbmdcbi0gQ3VyYXRvciByZWxhdGlvbnNoaXAgYnVpbGRpbmdcbi0gUGxheWxpc3QgcGVyZm9ybWFuY2UgYW5hbHl0aWNzXG5cbkhvdyBjYW4gSSBoZWxwIG9wdGltaXplIHlvdXIgcGxheWxpc3Qgc3VibWlzc2lvbiBzdHJhdGVneT9gLFxuICAgIFxuICAgIGFuYWx5emU6IChwcm9qZWN0OiBhbnkpID0+IGBcbkNyZWF0aW5nIHBsYXlsaXN0IHN0cmF0ZWd5IGZvcjpcbi0gR2VucmU6ICR7cHJvamVjdC5nZW5yZX1cbi0gU3R5bGU6ICR7cHJvamVjdC5zdHlsZX1cbi0gVGFyZ2V0IFBsYXlsaXN0czogJHtwcm9qZWN0LnRhcmdldFBsYXlsaXN0c31cblxuSSdsbCBmb2N1cyBvbjpcbjEuIFBsYXlsaXN0IG1hdGNoIGFuYWx5c2lzXG4yLiBTdWJtaXNzaW9uIHRpbWVsaW5lXG4zLiBDdXJhdG9yIG91dHJlYWNoIHN0cmF0ZWd5XG40LiBQZXJmb3JtYW5jZSB0cmFja2luZ1xuICAgIGBcbiAgfVxufTsgIl0sIm5hbWVzIjpbImFnZW50UHJvbXB0cyIsImRpc3RyaWJ1dGlvbiIsImluaXRpYWwiLCJhbmFseXplIiwicHJvamVjdCIsImFydGlzdE5hbWUiLCJnZW5yZSIsIm1hcmtldHMiLCJtYXJrZXRpbmciLCJnb2FscyIsImJ1ZGdldCIsInRpbWVsaW5lIiwicGxheWxpc3QiLCJzdHlsZSIsInRhcmdldFBsYXlsaXN0cyJdLCJpZ25vcmVMaXN0IjpbXSwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///./src/services/agentPrompts.ts\n");
 
 /***/ }),
 
@@ -63,6 +107,39 @@ eval("__webpack_require__.a(module, async (__webpack_handle_async_dependencies__
 /***/ (() => {
 
 
+
+/***/ }),
+
+/***/ "debug":
+/*!************************!*\
+  !*** external "debug" ***!
+  \************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("debug");
+
+/***/ }),
+
+/***/ "extend":
+/*!*************************!*\
+  !*** external "extend" ***!
+  \*************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("extend");
+
+/***/ }),
+
+/***/ "is-buffer":
+/*!****************************!*\
+  !*** external "is-buffer" ***!
+  \****************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("is-buffer");
 
 /***/ }),
 
@@ -107,17 +184,6 @@ module.exports = require("react");
 
 "use strict";
 module.exports = require("react-dom");
-
-/***/ }),
-
-/***/ "react-is":
-/*!***************************!*\
-  !*** external "react-is" ***!
-  \***************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("react-is");
 
 /***/ }),
 
@@ -173,6 +239,28 @@ module.exports = require("tabbable");
 
 "use strict";
 module.exports = require("path");
+
+/***/ }),
+
+/***/ "process":
+/*!**************************!*\
+  !*** external "process" ***!
+  \**************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("process");
+
+/***/ }),
+
+/***/ "url":
+/*!**********************!*\
+  !*** external "url" ***!
+  \**********************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("url");
 
 /***/ }),
 
@@ -242,6 +330,17 @@ module.exports = import("@floating-ui/utils/dom");;
 
 /***/ }),
 
+/***/ "@radix-ui/react-slot":
+/*!***************************************!*\
+  !*** external "@radix-ui/react-slot" ***!
+  \***************************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = import("@radix-ui/react-slot");;
+
+/***/ }),
+
 /***/ "@react-aria/focus":
 /*!************************************!*\
   !*** external "@react-aria/focus" ***!
@@ -264,6 +363,17 @@ module.exports = import("@react-aria/interactions");;
 
 /***/ }),
 
+/***/ "bail":
+/*!***********************!*\
+  !*** external "bail" ***!
+  \***********************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = import("bail");;
+
+/***/ }),
+
 /***/ "ccount":
 /*!*************************!*\
   !*** external "ccount" ***!
@@ -272,6 +382,28 @@ module.exports = import("@react-aria/interactions");;
 
 "use strict";
 module.exports = import("ccount");;
+
+/***/ }),
+
+/***/ "class-variance-authority":
+/*!*******************************************!*\
+  !*** external "class-variance-authority" ***!
+  \*******************************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = import("class-variance-authority");;
+
+/***/ }),
+
+/***/ "clsx":
+/*!***********************!*\
+  !*** external "clsx" ***!
+  \***********************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = import("clsx");;
 
 /***/ }),
 
@@ -286,6 +418,17 @@ module.exports = import("comma-separated-tokens");;
 
 /***/ }),
 
+/***/ "decode-named-character-reference":
+/*!***************************************************!*\
+  !*** external "decode-named-character-reference" ***!
+  \***************************************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = import("decode-named-character-reference");;
+
+/***/ }),
+
 /***/ "framer-motion":
 /*!********************************!*\
   !*** external "framer-motion" ***!
@@ -294,6 +437,17 @@ module.exports = import("comma-separated-tokens");;
 
 "use strict";
 module.exports = import("framer-motion");;
+
+/***/ }),
+
+/***/ "is-plain-obj":
+/*!*******************************!*\
+  !*** external "is-plain-obj" ***!
+  \*******************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = import("is-plain-obj");;
 
 /***/ }),
 
@@ -316,237 +470,6 @@ module.exports = import("markdown-table");;
 
 "use strict";
 module.exports = import("mdast-util-definitions");;
-
-/***/ }),
-
-/***/ "mdast-util-from-markdown":
-/*!*******************************************!*\
-  !*** external "mdast-util-from-markdown" ***!
-  \*******************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = import("mdast-util-from-markdown");;
-
-/***/ }),
-
-/***/ "mdast-util-to-markdown/lib/handle/inline-code.js":
-/*!*******************************************************************!*\
-  !*** external "mdast-util-to-markdown/lib/handle/inline-code.js" ***!
-  \*******************************************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = import("mdast-util-to-markdown/lib/handle/inline-code.js");;
-
-/***/ }),
-
-/***/ "mdast-util-to-markdown/lib/handle/list-item.js":
-/*!*****************************************************************!*\
-  !*** external "mdast-util-to-markdown/lib/handle/list-item.js" ***!
-  \*****************************************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = import("mdast-util-to-markdown/lib/handle/list-item.js");;
-
-/***/ }),
-
-/***/ "mdast-util-to-markdown/lib/util/association.js":
-/*!*****************************************************************!*\
-  !*** external "mdast-util-to-markdown/lib/util/association.js" ***!
-  \*****************************************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = import("mdast-util-to-markdown/lib/util/association.js");;
-
-/***/ }),
-
-/***/ "mdast-util-to-markdown/lib/util/container-flow.js":
-/*!********************************************************************!*\
-  !*** external "mdast-util-to-markdown/lib/util/container-flow.js" ***!
-  \********************************************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = import("mdast-util-to-markdown/lib/util/container-flow.js");;
-
-/***/ }),
-
-/***/ "mdast-util-to-markdown/lib/util/container-phrasing.js":
-/*!************************************************************************!*\
-  !*** external "mdast-util-to-markdown/lib/util/container-phrasing.js" ***!
-  \************************************************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = import("mdast-util-to-markdown/lib/util/container-phrasing.js");;
-
-/***/ }),
-
-/***/ "mdast-util-to-markdown/lib/util/indent-lines.js":
-/*!******************************************************************!*\
-  !*** external "mdast-util-to-markdown/lib/util/indent-lines.js" ***!
-  \******************************************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = import("mdast-util-to-markdown/lib/util/indent-lines.js");;
-
-/***/ }),
-
-/***/ "mdast-util-to-markdown/lib/util/safe.js":
-/*!**********************************************************!*\
-  !*** external "mdast-util-to-markdown/lib/util/safe.js" ***!
-  \**********************************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = import("mdast-util-to-markdown/lib/util/safe.js");;
-
-/***/ }),
-
-/***/ "mdast-util-to-markdown/lib/util/track.js":
-/*!***********************************************************!*\
-  !*** external "mdast-util-to-markdown/lib/util/track.js" ***!
-  \***********************************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = import("mdast-util-to-markdown/lib/util/track.js");;
-
-/***/ }),
-
-/***/ "micromark-core-commonmark":
-/*!********************************************!*\
-  !*** external "micromark-core-commonmark" ***!
-  \********************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = import("micromark-core-commonmark");;
-
-/***/ }),
-
-/***/ "micromark-factory-space":
-/*!******************************************!*\
-  !*** external "micromark-factory-space" ***!
-  \******************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = import("micromark-factory-space");;
-
-/***/ }),
-
-/***/ "micromark-util-character":
-/*!*******************************************!*\
-  !*** external "micromark-util-character" ***!
-  \*******************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = import("micromark-util-character");;
-
-/***/ }),
-
-/***/ "micromark-util-chunked":
-/*!*****************************************!*\
-  !*** external "micromark-util-chunked" ***!
-  \*****************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = import("micromark-util-chunked");;
-
-/***/ }),
-
-/***/ "micromark-util-classify-character":
-/*!****************************************************!*\
-  !*** external "micromark-util-classify-character" ***!
-  \****************************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = import("micromark-util-classify-character");;
-
-/***/ }),
-
-/***/ "micromark-util-combine-extensions":
-/*!****************************************************!*\
-  !*** external "micromark-util-combine-extensions" ***!
-  \****************************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = import("micromark-util-combine-extensions");;
-
-/***/ }),
-
-/***/ "micromark-util-normalize-identifier":
-/*!******************************************************!*\
-  !*** external "micromark-util-normalize-identifier" ***!
-  \******************************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = import("micromark-util-normalize-identifier");;
-
-/***/ }),
-
-/***/ "micromark-util-resolve-all":
-/*!*********************************************!*\
-  !*** external "micromark-util-resolve-all" ***!
-  \*********************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = import("micromark-util-resolve-all");;
-
-/***/ }),
-
-/***/ "micromark-util-sanitize-uri":
-/*!**********************************************!*\
-  !*** external "micromark-util-sanitize-uri" ***!
-  \**********************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = import("micromark-util-sanitize-uri");;
-
-/***/ }),
-
-/***/ "micromark-util-symbol/codes.js":
-/*!*************************************************!*\
-  !*** external "micromark-util-symbol/codes.js" ***!
-  \*************************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = import("micromark-util-symbol/codes.js");;
-
-/***/ }),
-
-/***/ "micromark-util-symbol/constants.js":
-/*!*****************************************************!*\
-  !*** external "micromark-util-symbol/constants.js" ***!
-  \*****************************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = import("micromark-util-symbol/constants.js");;
-
-/***/ }),
-
-/***/ "micromark-util-symbol/types.js":
-/*!*************************************************!*\
-  !*** external "micromark-util-symbol/types.js" ***!
-  \*************************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = import("micromark-util-symbol/types.js");;
 
 /***/ }),
 
@@ -605,6 +528,17 @@ module.exports = import("space-separated-tokens");;
 
 /***/ }),
 
+/***/ "tailwind-merge":
+/*!*********************************!*\
+  !*** external "tailwind-merge" ***!
+  \*********************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = import("tailwind-merge");;
+
+/***/ }),
+
 /***/ "trim-lines":
 /*!*****************************!*\
   !*** external "trim-lines" ***!
@@ -616,14 +550,14 @@ module.exports = import("trim-lines");;
 
 /***/ }),
 
-/***/ "unified":
-/*!**************************!*\
-  !*** external "unified" ***!
-  \**************************/
+/***/ "trough":
+/*!*************************!*\
+  !*** external "trough" ***!
+  \*************************/
 /***/ ((module) => {
 
 "use strict";
-module.exports = import("unified");;
+module.exports = import("trough");;
 
 /***/ }),
 
@@ -638,36 +572,14 @@ module.exports = import("unist-util-generated");;
 
 /***/ }),
 
-/***/ "unist-util-is":
-/*!********************************!*\
-  !*** external "unist-util-is" ***!
-  \********************************/
+/***/ "uuid":
+/*!***********************!*\
+  !*** external "uuid" ***!
+  \***********************/
 /***/ ((module) => {
 
 "use strict";
-module.exports = import("unist-util-is");;
-
-/***/ }),
-
-/***/ "unist-util-visit":
-/*!***********************************!*\
-  !*** external "unist-util-visit" ***!
-  \***********************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = import("unist-util-visit");;
-
-/***/ }),
-
-/***/ "unist-util-visit-parents":
-/*!*******************************************!*\
-  !*** external "unist-util-visit-parents" ***!
-  \*******************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = import("unist-util-visit-parents");;
+module.exports = import("uuid");;
 
 /***/ }),
 
@@ -679,17 +591,6 @@ module.exports = import("unist-util-visit-parents");;
 
 "use strict";
 module.exports = import("uvu/assert");;
-
-/***/ }),
-
-/***/ "vfile":
-/*!************************!*\
-  !*** external "vfile" ***!
-  \************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = import("vfile");;
 
 /***/ })
 
