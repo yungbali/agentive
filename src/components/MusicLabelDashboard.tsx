@@ -42,6 +42,7 @@ const MusicLabelDashboard: React.FC = () => {
   });
   const [strategy, setStrategy] = useState<string>('');
   const [partialStrategy, setPartialStrategy] = useState<string>('');
+  const [isStreaming, setIsStreaming] = useState(false);
   const agent = new MusicLabelAgent();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -55,14 +56,32 @@ const MusicLabelDashboard: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
+    setIsStreaming(true);
+    setStrategy('');
+    
     try {
-      const result = await agent.planDistributionStrategy(project);
-      setStrategy(result);
+      const response = await agent.planDistributionStrategy(project);
+      
+      if (!response.body) {
+        throw new Error('No response body');
+      }
+
+      const reader = response.body.getReader();
+      let accumulatedStrategy = '';
+      
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        
+        const chunk = new TextDecoder().decode(value);
+        accumulatedStrategy += chunk;
+        setStrategy(accumulatedStrategy);
+      }
     } catch (error) {
-      console.error('Error generating strategy:', error);
+      console.error('Error:', error);
     } finally {
       setLoading(false);
+      setIsStreaming(false);
     }
   };
 
@@ -182,8 +201,8 @@ const MusicLabelDashboard: React.FC = () => {
         </div>
         {(strategy || partialStrategy) && (
           <StrategyDisplay 
-            strategy={strategy || partialStrategy}
-            isStreaming={false} // Add required isStreaming prop
+            strategy={strategy || partialStrategy} 
+            isStreaming={isStreaming} 
           />
         )}
       </div>
