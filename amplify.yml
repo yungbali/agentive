@@ -3,11 +3,7 @@ frontend:
   phases:
     preBuild:
       commands:
-        - npm cache clean --force
-        - rm -rf node_modules
-        - rm -f package-lock.json
         - npm install
-        - npm run generate:outputs
     build:
       commands:
         - npm run build

@@ -4,8 +4,6 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "generate:outputs": "ts-node scripts/generate-outputs.ts",
-    "prebuild": "npm run generate:outputs",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
