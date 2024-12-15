@@ -1,5 +1,3 @@
-import { CopilotKit } from '@copilotkit/react-core';
-
 interface MusicProject {
   artistName: string;
   trackTitle: string;
@@ -13,7 +11,7 @@ export class MusicLabelAgent {
   private apiKey: string;
 
   constructor() {
-    this.apiKey = process.env.NEXT_PUBLIC_COPILOT_API_KEY || '';
+    this.apiKey = process.env.OPENAI_API_KEY || '';
   }
 
   async planDistributionStrategy(project: MusicProject): Promise<string> {
@@ -44,29 +42,21 @@ export class MusicLabelAgent {
                 2. Budget allocation
                 3. Platform-specific strategy
                 4. Marketing recommendations
-                5. Key performance indicators
-              `,
+                5. Key performance indicators`,
             },
           ],
         }),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
+        const data = await response.json();
         throw new Error(data.details || data.error || 'Failed to generate strategy');
       }
 
-      if (!data.response) {
-        throw new Error('No strategy was generated');
-      }
-
-      return data.response;
+      const text = await response.text();
+      return text;
     } catch (error) {
-      console.error('Strategy generation error:', error);
-      throw new Error(
-        error instanceof Error ? error.message : 'Failed to generate distribution strategy'
-      );
+      throw error instanceof Error ? error : new Error('Failed to generate strategy');
     }
   }
 }

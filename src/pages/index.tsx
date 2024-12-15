@@ -1,10 +1,9 @@
 // pages/index.tsx
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import dynamic from 'next/dynamic';
 import { motion, Variants } from 'framer-motion';
-import { AgentiveServices } from '../components/AgentiveServices';
 import { AgentiveWorkflow } from '../components/AgentiveWorkflow';
 
 const MusicLabelDashboard = dynamic(() => import('../components/MusicLabelDashboard'), {

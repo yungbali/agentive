@@ -10,9 +10,6 @@
     "format": "prettier --write \"src/**/*.{ts,tsx}\""
   },
   "dependencies": {
-    "@copilotkit/react-core": "^1.4.7",
-    "@copilotkit/react-textarea": "^1.4.7",
-    "@copilotkit/react-ui": "^1.4.7",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/material": "^6.2.0",
