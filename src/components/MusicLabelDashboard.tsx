@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import AnimatedHeader from './AnimatedHeader';
-import LoadingSpinner from './LoadingSpinner';
-import MusicLabelChat from './MusicLabelChat';
-import StrategyDisplay from './StrategyDisplay';
 import { MusicLabelAgent } from '../agents/MusicLabelAgent';
+import StrategyDisplay from './StrategyDisplay';
 
 interface Project {
   artistName: string;
@@ -14,21 +11,6 @@ interface Project {
   marketingBudget: number;
   distributionPlatforms: string[];
 }
-
-const platforms = ['Spotify', 'Apple Music', 'YouTube Music', 'Amazon Music', 'TikTok'];
-
-const _formVariants = {
-  hover: {
-    boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.1)',
-    transition: {
-      type: 'spring',
-      stiffness: 400,
-      damping: 10,
-    },
-  },
-};
-
-const _error = null;
 
 const MusicLabelDashboard: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -99,113 +81,116 @@ const MusicLabelDashboard: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
-      <AnimatedHeader />
+    <div className="container mx-auto px-4 py-8 min-h-screen">
+      <motion.div
+        className="grid md:grid-cols-[1fr,1.5fr] gap-8"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        {/* Input Form Section */}
+        <div className="bg-white/80 backdrop-blur-sm shadow-xl rounded-[25px] p-6 md:p-8 h-fit">
+          <h2 className="text-2xl font-bold mb-6">New Release Project</h2>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <label className="block text-sm font-medium">Artist Name</label>
+              <input
+                type="text"
+                name="artistName"
+                value={project.artistName}
+                onChange={handleInputChange}
+                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                required
+              />
+            </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr,1.5fr] gap-8">
-        <div className="space-y-6">
-          <div className="bg-white/80 backdrop-blur-sm shadow-xl rounded-[25px] p-8">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <h2 className="text-xl font-semibold mb-4">New Release Project</h2>
+            <div className="space-y-2">
+              <label className="block text-sm font-medium">Track Title</label>
+              <input
+                type="text"
+                name="trackTitle"
+                value={project.trackTitle}
+                onChange={handleInputChange}
+                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                required
+              />
+            </div>
 
-              <motion.div className="space-y-4" variants={_formVariants} whileFocus="focus">
-                <div>
-                  <label className="block text-sm font-medium mb-1">Artist Name</label>
-                  <motion.input
-                    type="text"
-                    name="artistName"
-                    value={project.artistName}
-                    onChange={handleInputChange}
-                    className="w-full p-3 border rounded-[15px] bg-[#EBEFF1] focus:ring-2 focus:ring-blue-500"
-                    whileFocus="focus"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-1">Track Title</label>
-                  <motion.input
-                    type="text"
-                    name="trackTitle"
-                    value={project.trackTitle}
-                    onChange={handleInputChange}
-                    className="w-full p-3 border rounded-[15px] bg-[#EBEFF1] focus:ring-2 focus:ring-blue-500"
-                    whileFocus="focus"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-1">Genre</label>
-                  <motion.select
-                    name="genre"
-                    value={project.genre}
-                    onChange={handleInputChange}
-                    className="w-full p-3 border rounded-[15px] bg-[#EBEFF1] focus:ring-2 focus:ring-blue-500"
-                    whileFocus="focus"
-                  >
-                    <option value="">Select genre</option>
-                    <option value="pop">Pop</option>
-                    <option value="hiphop">Hip Hop</option>
-                    <option value="rnb">R&B</option>
-                    <option value="electronic">Electronic</option>
-                  </motion.select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-1">Marketing Budget</label>
-                  <motion.input
-                    type="number"
-                    name="marketingBudget"
-                    value={project.marketingBudget}
-                    onChange={handleInputChange}
-                    className="w-full p-3 border rounded-[15px] bg-[#EBEFF1] focus:ring-2 focus:ring-blue-500"
-                    whileFocus="focus"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-1">Distribution Platforms</label>
-                  <div className="flex flex-wrap gap-2">
-                    {platforms.map((platform) => (
-                      <motion.label
-                        key={platform}
-                        className="inline-flex items-center p-2 bg-[#EBEFF1] rounded-[15px]"
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={project.distributionPlatforms.includes(platform)}
-                          onChange={() => handlePlatformChange(platform)}
-                          className="mr-2"
-                        />
-                        <span className="text-sm">{platform}</span>
-                      </motion.label>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-
-              <motion.button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-[#767DFF] text-white py-3 px-6 rounded-[20px] hover:bg-[#5d64ff] disabled:opacity-50"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium">Genre</label>
+              <select
+                name="genre"
+                value={project.genre}
+                onChange={handleInputChange}
+                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                required
               >
-                {loading ? <LoadingSpinner /> : 'Generate Strategy'}
-              </motion.button>
-            </form>
-          </div>
+                <option value="">Select Genre</option>
+                <option value="Pop">Pop</option>
+                <option value="Hip Hop">Hip Hop</option>
+                <option value="R&B">R&B</option>
+                <option value="Rock">Rock</option>
+                <option value="Electronic">Electronic</option>
+              </select>
+            </div>
 
-          <MusicLabelChat />
+            <div className="space-y-2">
+              <label className="block text-sm font-medium">Marketing Budget ($)</label>
+              <input
+                type="number"
+                name="marketingBudget"
+                value={project.marketingBudget}
+                onChange={handleInputChange}
+                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                required
+                min="0"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-sm font-medium">Distribution Platforms</label>
+              <div className="grid grid-cols-2 gap-2">
+                {['Spotify', 'Apple Music', 'YouTube Music', 'Amazon Music', 'TikTok'].map((platform) => (
+                  <label key={platform} className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      checked={project.distributionPlatforms.includes(platform)}
+                      onChange={() => handlePlatformChange(platform)}
+                      className="mr-2"
+                    />
+                    <span className="text-sm">{platform}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 px-6 bg-blue-600 text-white rounded-lg font-medium 
+                hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+                disabled:opacity-50 disabled:cursor-not-allowed transition-colors
+                flex items-center justify-center gap-2"
+            >
+              {loading ? (
+                <>
+                  <div className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent" />
+                  Generating Strategy...
+                </>
+              ) : (
+                'Generate Strategy'
+              )}
+            </button>
+          </form>
         </div>
+
         {(strategy || partialStrategy) && (
           <StrategyDisplay 
             strategy={strategy || partialStrategy} 
             isStreaming={isStreaming} 
           />
         )}
-      </div>
+      </motion.div>
     </div>
   );
 };
