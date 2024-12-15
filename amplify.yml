@@ -3,13 +3,13 @@ frontend:
   phases:
     preBuild:
       commands:
-        - npm ci --cache .npm --prefer-offline
-        - touch .env
-        - echo "OPENAI_API_KEY=${OPENAI_API_KEY}" >> .env
-        - echo "NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}" >> .env
+        - npm cache clean --force
+        - rm -rf node_modules
+        - rm -f package-lock.json
+        - npm install
+        - npm run generate:outputs
     build:
       commands:
-        - cp .env .env.production
         - npm run build
   artifacts:
     baseDirectory: .next
@@ -19,7 +19,6 @@ frontend:
     paths:
       - node_modules/**/*
       - .next/cache/**/*
-      - .npm/**/*
   customHeaders:
     - pattern: '**/*'
       headers:
