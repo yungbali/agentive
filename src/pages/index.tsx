@@ -6,9 +6,13 @@ import dynamic from 'next/dynamic';
 import { motion, Variants } from 'framer-motion';
 import { AgentiveWorkflow } from '../components/AgentiveWorkflow';
 
-const MusicLabelDashboard = dynamic(() => import('../components/MusicLabelDashboard'), {
-  ssr: false,
-});
+const MusicLabelDashboard = dynamic(
+  () => import('../components/MusicLabelDashboard'),
+  {
+    ssr: false,
+    loading: () => <div>Loading...</div>
+  }
+);
 
 const pageVariants: Variants = {
   initial: {
