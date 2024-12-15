@@ -8,11 +8,16 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   webpack: (config) => {
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false,
+    };
     return config;
   },
   images: {
     unoptimized: true,
-  }
+  },
+  pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'json']
 };
 
 module.exports = nextConfig; 
