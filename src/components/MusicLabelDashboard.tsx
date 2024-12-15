@@ -180,9 +180,11 @@ const MusicLabelDashboard: React.FC = () => {
 
           <MusicLabelChat />
         </div>
-
         {(strategy || partialStrategy) && (
-          <StrategyDisplay strategy={strategy || partialStrategy} />
+          <StrategyDisplay 
+            strategy={strategy || partialStrategy}
+            isStreaming={false} // Add required isStreaming prop
+          />
         )}
       </div>
     </div>

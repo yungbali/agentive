@@ -25,24 +25,11 @@ export class MusicLabelAgent {
           messages: [
             {
               role: 'system',
-              content: 'You are a music industry expert helping to create distribution strategies.',
+              content: 'You are a music distribution strategist. Format your response in markdown with proper headers, lists, and sections.',
             },
             {
               role: 'user',
-              content: `Create a detailed distribution strategy for:
-                Artist: ${project.artistName}
-                Track: ${project.trackTitle}
-                Genre: ${project.genre}
-                Release Date: ${project.releaseDate}
-                Marketing Budget: $${project.marketingBudget}
-                Platforms: ${project.distributionPlatforms.join(', ')}
-
-                Please include:
-                1. Timeline for release
-                2. Budget allocation
-                3. Platform-specific strategy
-                4. Marketing recommendations
-                5. Key performance indicators`,
+              content: `Create a distribution strategy for artist ${project.artistName}'s track "${project.trackTitle}" (${project.genre}). Budget: $${project.marketingBudget}. Platforms: ${project.distributionPlatforms.join(", ")}`,
             },
           ],
         }),

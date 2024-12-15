@@ -1,72 +1,100 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
+import { Download } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 interface StrategyDisplayProps {
   strategy: string;
+  isStreaming: boolean;
 }
 
-const StrategyDisplay: React.FC<StrategyDisplayProps> = ({ strategy }) => {
+const StrategyDisplay: React.FC<StrategyDisplayProps> = ({ strategy, isStreaming }) => {
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (contentRef.current && isStreaming) {
+      contentRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+  }, [strategy, isStreaming]);
+
+  const formatStrategy = (text: string): string => {
+    const lines = text.split('data: ');
+    const content = lines
+      .map(line => {
+        try {
+          const parsed = JSON.parse(line);
+          return parsed.content;
+        } catch {
+          return '';
+        }
+      })
+      .join('');
+
+    return content;
+  };
+
   const handleDownload = () => {
-    const element = document.createElement('a');
-    const file = new Blob([strategy], { type: 'text/plain' });
-    element.href = URL.createObjectURL(file);
-    element.download = 'distribution-strategy.txt';
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
+    const formattedText = formatStrategy(strategy)
+      .replace(/#{1,6} /g, '')
+      .replace(/\*\*/g, '')
+      .replace(/- /g, '• ')
+      .split('\n')
+      .map(line => line.trim())
+      .filter(Boolean)
+      .join('\n\n');
+
+    const blob = new Blob([formattedText], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'distribution-strategy.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   return (
     <motion.div
+      className="bg-white/80 backdrop-blur-sm shadow-xl rounded-[25px] p-8"
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
-      className="bg-white/80 backdrop-blur-sm shadow-xl rounded-[25px] p-8 sticky top-6 max-h-[calc(100vh-4rem)] overflow-y-auto"
+      transition={{ duration: 0.5 }}
     >
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-blue-600">Distribution Strategy</h2>
-        <motion.button
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-semibold">
+          Generated Strategy {isStreaming && <span className="text-blue-600 animate-pulse">•</span>}
+        </h2>
+        <button
           onClick={handleDownload}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          disabled={isStreaming}
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-            />
-          </svg>
+          <Download size={16} />
           Download
-        </motion.button>
+        </button>
       </div>
-
-      <div className="prose prose-blue max-w-none">
-        <ReactMarkdown
+      <div className="prose prose-slate max-w-none" ref={contentRef}>
+        <ReactMarkdown 
           remarkPlugins={[remarkGfm]}
-          className="prose prose-blue max-w-none prose-headings:text-blue-600 prose-h1:text-3xl prose-h2:text-2xl prose-p:text-gray-600 prose-strong:text-blue-500"
           components={{
-            h1: ({ node, ...props }) => (
-              <h1 className="text-3xl font-bold mb-6 text-blue-600 border-b pb-2" {...props} />
-            ),
-            h2: ({ node, ...props }) => (
-              <h2 className="text-2xl font-semibold mb-4 text-blue-500 mt-8" {...props} />
-            ),
-            ul: ({ node, ...props }) => <ul className="list-disc pl-6 mb-6 space-y-2" {...props} />,
-            li: ({ node, ...props }) => <li className="text-gray-600 leading-relaxed" {...props} />,
-            p: ({ node, ...props }) => (
-              <p className="mb-4 text-gray-600 leading-relaxed" {...props} />
-            ),
-            strong: ({ node, ...props }) => (
-              <strong className="font-semibold text-blue-500" {...props} />
-            ),
+            h1: ({...props}) => <h1 className="text-2xl font-bold my-4 text-gray-900" {...props} />,
+            h2: ({...props}) => <h2 className="text-xl font-semibold my-3 text-gray-800" {...props} />,
+            h3: ({...props}) => <h3 className="text-lg font-medium my-2 text-gray-800" {...props} />,
+            p: ({...props}) => <p className="my-2 text-gray-700 leading-relaxed" {...props} />,
+            ul: ({...props}) => <ul className="list-disc ml-4 my-2 space-y-1" {...props} />,
+            ol: ({...props}) => <ol className="list-decimal ml-4 my-2 space-y-1" {...props} />,
+            li: ({...props}) => <li className="my-1 text-gray-700" {...props} />,
+            strong: ({...props}) => <strong className="font-semibold text-gray-900" {...props} />,
+            em: ({...props}) => <em className="italic text-gray-800" {...props} />
           }}
         >
-          {strategy}
+          {formatStrategy(strategy)}
         </ReactMarkdown>
+        {isStreaming && (
+          <div className="h-4 w-2 bg-blue-600 animate-pulse rounded-full ml-1 inline-block" />
+        )}
       </div>
     </motion.div>
   );
