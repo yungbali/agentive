@@ -1,11 +1,15 @@
 'use client';
-import React, { useState, useRef, type ChangeEvent, type ReactNode } from 'react';
-import { AudioAnalysisService, AudioFeatures } from '@/services/AudioAnalysisService';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Upload, Music2 } from 'lucide-react';
 import { uploadData } from '@aws-amplify/storage';
 import { getCurrentUser } from '@aws-amplify/auth';
 import StrategyGenerator from '@/components/StrategyGenerator';
+import dynamic from 'next/dynamic';
+import { AudioAnalysisService, AudioFeatures } from '@/services/AudioAnalysisService';
+
+// Dynamically import the AudioAnalyzer component with no SSR
+const AudioAnalyzer = dynamic(() => import('../../components/AudioAnalyzer'), { ssr: false });
 
 interface AnalysisState {
   isAnalyzing: boolean;
@@ -20,8 +24,16 @@ export default function MusicAnalysisPage() {
     isAnalyzing: false,
     progress: 0
   });
-  const audioService = useRef(new AudioAnalysisService());
+  const audioService = useRef<AudioAnalysisService | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const [isMounted, setIsMounted] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+    setIsClient(true);
+    audioService.current = new AudioAnalysisService();
+  }, []);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
@@ -54,7 +66,7 @@ export default function MusicAnalysisPage() {
   };
 
   const analyzeMusic = async () => {
-    if (!file) return;
+    if (!file || !audioService.current) return;
 
     setAnalysis({ isAnalyzing: true, progress: 0 });
 
@@ -73,6 +85,10 @@ export default function MusicAnalysisPage() {
       }));
     }
   };
+
+  if (!isMounted) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white p-8">
@@ -162,6 +178,8 @@ export default function MusicAnalysisPage() {
             <StrategyGenerator audioFeatures={analysis.features} />
           </motion.div>
         )}
+
+        {isClient && <AudioAnalyzer />}
       </div>
     </div>
   );
@@ -176,6 +194,7 @@ const FeatureCard = ({ title, value, icon }: { title: string; value: string; ico
     <p className="text-2xl font-bold text-blue-400">{value}</p>
   </div>
 );
+
 function generateMarketingRecommendations(features: AudioFeatures): string[] {
   const recommendations: string[] = [];
   if (features.tempo > 120) {
