@@ -12,6 +12,12 @@ Amplify.configure({
         email: true
       }
     }
+  },
+  Storage: {
+    S3: {
+      bucket: config.storage.bucket_name,
+      region: config.storage.aws_region
+    }
   }
 });
 

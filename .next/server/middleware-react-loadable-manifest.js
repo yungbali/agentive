@@ -1,1 +1,1 @@
-self.__REACT_LOADABLE_MANIFEST="{\"index.tsx -> ../components/MusicLabelDashboard\":{\"id\":\"index.tsx -> ../components/MusicLabelDashboard\",\"files\":[\"static/chunks/src_components_MusicLabelDashboard_tsx.js\"]}}"
+self.__REACT_LOADABLE_MANIFEST="{}"

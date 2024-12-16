@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+'use client';
+import React from 'react';
 import { MusicLabelAgent } from '../agents/MusicLabelAgent';
 import StrategyDisplay from './StrategyDisplay';
+import { uploadData } from 'aws-amplify/storage';
+import MusicAnalyzer from './MusicAnalyzer';
 
 interface Project {
   artistName: string;
@@ -11,9 +14,9 @@ interface Project {
   distributionPlatforms: string[];
 }
 
-const MusicLabelDashboard: React.FC = () => {
-  const [loading, setLoading] = useState(false);
-  const [project, setProject] = useState<Project>({
+const MusicLabelDashboard = () => {
+  const [loading, setLoading] = React.useState(false);
+  const [project, setProject] = React.useState<Project>({
     artistName: '',
     trackTitle: '',
     genre: '',
@@ -21,9 +24,9 @@ const MusicLabelDashboard: React.FC = () => {
     marketingBudget: 0,
     distributionPlatforms: []
   });
-  const [strategy, setStrategy] = useState<string>('');
-  const [partialStrategy, setPartialStrategy] = useState<string>('');
-  const [isStreaming, setIsStreaming] = useState(false);
+  const [strategy, setStrategy] = React.useState('');
+  const [partialStrategy, setPartialStrategy] = React.useState('');
+  const [isStreaming, setIsStreaming] = React.useState(false);
   const agent = new MusicLabelAgent();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -66,16 +69,27 @@ const MusicLabelDashboard: React.FC = () => {
     }
   };
 
-  const handlePlatformChange = async (platform: string) => {
+  const handlePlatformChange = (platform: string) => {
+    setProject(prev => ({
+      ...prev,
+      distributionPlatforms: prev.distributionPlatforms.includes(platform)
+        ? prev.distributionPlatforms.filter((p: string) => p !== platform)
+        : [...prev.distributionPlatforms, platform]
+    }));
+  };
+
+  const handleFileUpload = async (file: File) => {
     try {
-      setProject(prev => ({
-        ...prev,
-        distributionPlatforms: prev.distributionPlatforms.includes(platform)
-          ? prev.distributionPlatforms.filter(p => p !== platform)
-          : [...prev.distributionPlatforms, platform]
-      }));
+      const result = await uploadData({
+        key: `music/${file.name}`,
+        data: file,
+        options: {
+          contentType: file.type
+        }
+      });
+      console.log('Upload success:', result);
     } catch (error) {
-      console.error('Error updating platforms:', error);
+      console.error('Upload error:', error);
     }
   };
 
@@ -186,6 +200,8 @@ const MusicLabelDashboard: React.FC = () => {
             isStreaming={isStreaming} 
           />
         )}
+
+        <MusicAnalyzer />
       </div>
     </div>
   );

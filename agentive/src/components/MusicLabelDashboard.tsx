@@ -138,7 +138,7 @@ const MusicLabelDashboard: React.FC = () => {
                   <Checkbox
                     id={platform.toLowerCase()}
                     checked={project.distributionPlatforms.includes(platform)}
-                    onCheckedChange={(checked) => {
+                    onCheckedChange={(checked: boolean) => {
                       const updatedPlatforms = checked
                         ? [...project.distributionPlatforms, platform]
                         : project.distributionPlatforms.filter(p => p !== platform);

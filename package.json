@@ -12,9 +12,8 @@
     "@aws-amplify/backend": "^1.9.0",
     "@aws-amplify/backend-cli": "^1.4.3",
     "@aws-amplify/ui-react": "^6.0.7",
+    "@radix-ui/react-tabs": "^1.1.2",
     "@types/node": "20.10.5",
-    "@types/react": "18.2.45",
-    "@types/react-dom": "18.2.18",
     "@types/uuid": "^9.0.7",
     "autoprefixer": "10.4.16",
     "aws-amplify": "^6.0.9",
@@ -22,7 +21,7 @@
     "clsx": "^2.0.0",
     "framer-motion": "^10.16.16",
     "lucide-react": "^0.303.0",
-    "next": "14.0.4",
+    "next": "^14.2.20",
     "openai": "^4.24.1",
     "postcss": "^8.4.32",
     "react": "18.2.0",
@@ -34,5 +33,9 @@
     "tailwindcss-animate": "^1.0.7",
     "typescript": "5.3.3",
     "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.1",
+    "@types/react-dom": "^19.0.2"
   }
 }
