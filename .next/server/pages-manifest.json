@@ -1,6 +1,7 @@
 {
-  "/api/strategy": "pages/api/strategy.js",
   "/_app": "pages/_app.js",
+  "/api/copilot": "pages/api/copilot.js",
   "/_error": "pages/_error.js",
-  "/_document": "pages/_document.js"
+  "/_document": "pages/_document.js",
+  "/api/strategy": "pages/api/strategy.js"
 }

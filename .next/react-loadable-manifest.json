@@ -1,32 +1,36 @@
 {
   "components/Distribution.tsx -> ./MotionDiv": {
-    "id": "components/Distribution.tsx -> ./MotionDiv",
+    "id": 8179,
     "files": [
-      "static/chunks/_app-pages-browser_src_components_MotionDiv_tsx.js"
+      "static/chunks/429-1da5e4f636fd44c9.js",
+      "static/chunks/495.7cf85fae93db3e77.js"
     ]
   },
   "components/TabsContainer.tsx -> @/components/Distribution": {
-    "id": "components/TabsContainer.tsx -> @/components/Distribution",
+    "id": 9834,
     "files": [
-      "static/chunks/_app-pages-browser_src_components_Distribution_tsx.js"
+      "static/chunks/834.a9697169d18ab961.js"
     ]
   },
   "components/TabsContainer.tsx -> @/components/MessageDisplay": {
-    "id": "components/TabsContainer.tsx -> @/components/MessageDisplay",
+    "id": 3586,
     "files": [
-      "static/chunks/_app-pages-browser_src_components_MessageDisplay_tsx.js"
+      "static/chunks/429-1da5e4f636fd44c9.js",
+      "static/chunks/296.8850b75ceb27a050.js",
+      "static/chunks/586.765101a3ff32ab77.js"
     ]
   },
   "components/TabsContainer.tsx -> @/components/MotionDiv": {
-    "id": "components/TabsContainer.tsx -> @/components/MotionDiv",
+    "id": 8179,
     "files": [
-      "static/chunks/_app-pages-browser_src_components_MotionDiv_tsx.js"
+      "static/chunks/429-1da5e4f636fd44c9.js",
+      "static/chunks/495.7cf85fae93db3e77.js"
     ]
   },
   "components/TabsContainer.tsx -> @/components/StrategyForm": {
-    "id": "components/TabsContainer.tsx -> @/components/StrategyForm",
+    "id": 8836,
     "files": [
-      "static/chunks/_app-pages-browser_src_components_StrategyForm_tsx.js"
+      "static/chunks/836.e32aab47136f7a12.js"
     ]
   }
 }
