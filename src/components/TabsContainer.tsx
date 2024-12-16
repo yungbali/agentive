@@ -1,71 +1,135 @@
 'use client';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { motion, AnimatePresence } from "framer-motion";
-import { BarChart2, Share2 } from "lucide-react";
-import StrategyGenerator from "./StrategyGenerator";
-import MusicLabelDashboard from "./MusicLabelDashboard";
 
-const defaultAudioFeatures = {
-  tempo: 0,
-  key: '',
-  scale: '',
-  mood: '',
-  energy: 0,
-  danceability: 0
-};
+import { useState } from 'react';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import dynamic from 'next/dynamic';
+import { Message, StrategyInput } from '@/types';
+import { AnimatePresence } from 'framer-motion';
+
+const Distribution = dynamic(
+  () => import('@/components/Distribution').then(mod => mod.default),
+  { loading: () => <div>Loading...</div>, ssr: false }
+);
+
+const StrategyForm = dynamic(
+  () => import('@/components/StrategyForm').then(mod => mod.default),
+  { loading: () => <div>Loading...</div>, ssr: false }
+);
+
+const MessageDisplay = dynamic(
+  () => import('@/components/MessageDisplay').then(mod => mod.default),
+  { loading: () => <div>Loading...</div>, ssr: false }
+);
+
+const MotionDiv = dynamic(
+  () => import('@/components/MotionDiv').then(mod => mod.default),
+  { ssr: false }
+);
 
 export default function TabsContainer() {
-  const motionProps = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -20 },
-    transition: { duration: 0.3 }
+  const [isLoading, setIsLoading] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
+
+  const handleStrategySubmit = async (input: StrategyInput) => {
+    try {
+      setIsLoading(true);
+      
+      // Add user message
+      const userMessage: Message = {
+        id: Date.now().toString(),
+        role: 'user',
+        content: `Strategy request for ${input.category} in ${input.region}`,
+        timestamp: new Date()
+      };
+      
+      // Add thinking message
+      const thinkingMessageId = (Date.now() + 1).toString();
+      const thinkingMessage: Message = {
+        id: thinkingMessageId,
+        role: 'assistant',
+        content: '',
+        timestamp: new Date(),
+        status: 'thinking'
+      };
+      
+      setMessages(prev => [...prev, userMessage, thinkingMessage]);
+
+      // Make API call
+      const response = await fetch('/api/strategy', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(input)
+      });
+
+      if (!response.ok) throw new Error('Strategy generation failed');
+
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let accumulatedResponse = '';
+
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const chunk = decoder.decode(value);
+          accumulatedResponse += chunk;
+
+          // Update the thinking message with accumulated response
+          setMessages(prev => prev.map(msg => 
+            msg.id === thinkingMessageId 
+              ? { ...msg, content: accumulatedResponse, status: 'complete' }
+              : msg
+          ));
+        }
+      }
+
+    } catch (error) {
+      console.error('Strategy generation error:', error);
+      setMessages(prev => prev.map(msg => 
+        msg.status === 'thinking'
+          ? { ...msg, content: 'Strategy generation failed. Please try again.', status: 'error' }
+          : msg
+      ));
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <Tabs defaultValue="strategy" className="w-full">
-      <TabsList className="grid grid-cols-2 w-full max-w-2xl mx-auto mb-8 bg-gray-800/40 backdrop-blur-sm">
-        <TabsTrigger 
-          value="strategy" 
-          className="flex items-center gap-2 px-8 py-4 rounded-lg data-[state=active]:bg-blue-600/90 data-[state=active]:text-white transition-all duration-200"
-        >
-          <BarChart2 className="w-5 h-5" />
-          <span>Strategy</span>
-        </TabsTrigger>
-        <TabsTrigger 
-          value="distribution" 
-          className="flex items-center gap-2 px-8 py-4 rounded-lg data-[state=active]:bg-blue-600/90 data-[state=active]:text-white transition-all duration-200"
-        >
-          <Share2 className="w-5 h-5" />
-          <span>Distribution</span>
-        </TabsTrigger>
+      <TabsList className="grid grid-cols-2 w-full max-w-2xl mx-auto mb-8">
+        <TabsTrigger value="strategy">Strategy</TabsTrigger>
+        <TabsTrigger value="distribution">Distribution</TabsTrigger>
       </TabsList>
 
       <AnimatePresence mode="wait">
         <TabsContent value="strategy">
-          <motion.div {...motionProps} style={{
-            backgroundColor: "rgba(31, 41, 55, 0.4)",
-            backdropFilter: "blur(4px)",
-            borderRadius: "0.75rem",
-            padding: "2rem",
-            boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
-            border: "1px solid rgba(55, 65, 81, 0.5)"
-          }}>
-            <StrategyGenerator audioFeatures={defaultAudioFeatures} />
-          </motion.div>
+          <MotionDiv
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="bg-gray-900/40 backdrop-blur-sm rounded-xl p-6 border border-gray-800"
+          >
+            <StrategyForm onSubmit={handleStrategySubmit} isLoading={isLoading} />
+            
+            <div className="mt-6 space-y-4">
+              {messages.map((message) => (
+                <MessageDisplay key={message.id} message={message} />
+              ))}
+            </div>
+          </MotionDiv>
         </TabsContent>
 
         <TabsContent value="distribution">
-          <motion.div {...motionProps} style={{
-            backgroundColor: "rgba(31, 41, 55, 0.4)", 
-            backdropFilter: "blur(4px)",
-            borderRadius: "0.75rem",
-            padding: "2rem",
-            boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
-            border: "1px solid rgba(55, 65, 81, 0.5)"
-          }}>
-            <MusicLabelDashboard />
-          </motion.div>
+          <MotionDiv
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="bg-gray-900/40 backdrop-blur-sm rounded-xl p-6 border border-gray-800"
+          >
+            <Distribution />
+          </MotionDiv>
         </TabsContent>
       </AnimatePresence>
     </Tabs>

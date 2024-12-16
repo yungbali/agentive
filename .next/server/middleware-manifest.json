@@ -1,6 +1,27 @@
 {
   "version": 3,
   "middleware": {},
-  "functions": {},
+  "functions": {
+    "/api/strategy": {
+      "files": [
+        "server/edge-runtime-webpack.js",
+        "server/pages/api/strategy.js"
+      ],
+      "name": "pages/api/strategy",
+      "page": "/api/strategy",
+      "matchers": [
+        {
+          "regexp": "^/api/strategy$",
+          "originalSource": "/api/strategy"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "development",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "l2lRHwNPNldLjBemotSR40sC5paNynwXE+S2NZ7zPa0="
+      }
+    }
+  },
   "sortedMiddleware": []
 }
