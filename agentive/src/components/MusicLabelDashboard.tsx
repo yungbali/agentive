@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-import { Button } from "./ui/button";
-import { Checkbox } from "./ui/checkbox";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import LoadingSpinner from '@/components/LoadingSpinner';
+import { generateClient } from 'aws-amplify/data';
+import type { Schema } from '../../../amplify/data/resource';
+
+const client = generateClient<Schema>();
 
 const MusicLabelDashboard: React.FC = () => {
   const [project, setProject] = useState({
@@ -15,16 +19,65 @@ const MusicLabelDashboard: React.FC = () => {
   });
   const [loading, setLoading] = useState(false);
   const [platforms, setPlatforms] = useState(['Spotify', 'Apple Music', 'Tidal', 'Amazon Music']);
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [strategy, setStrategy] = useState('');
+
+  const saveProjectToDb = async (projectData: typeof project, strategyText: string) => {
+    try {
+      const result = await client.models.MusicProject.create({
+        ...projectData,
+        marketingBudget: Number(projectData.marketingBudget), // Convert string to number
+        strategy: strategyText,
+        status: 'active',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      });
+      return result;
+    } catch (error) {
+      console.error('Error saving project:', error);
+      throw error;
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Here you would normally send the form data to the server
-    // For now, we'll just simulate a delay
-    setTimeout(() => {
+    setIsStreaming(true);
+    setStrategy('');
+    try {
+      const response = await fetch('/api/planDistributionStrategy', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(project)
+      });
+      
+      if (!response.body) {
+        throw new Error('No response body');
+      }
+
+      const reader = response.body.getReader();
+      let accumulatedStrategy = '';
+      
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        
+        const chunk = new TextDecoder().decode(value);
+        accumulatedStrategy += chunk;
+        setStrategy(accumulatedStrategy);
+      }
+
+      // Save to database after strategy is generated
+      await saveProjectToDb(project, accumulatedStrategy);
+
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
       setLoading(false);
-      // Optionally, you can reset the form or show a success message
-    }, 2000);
+      setIsStreaming(false);
+    }
   };
 
   return (
