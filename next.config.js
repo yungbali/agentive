@@ -17,7 +17,13 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'json']
+  pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
+  experimental: {
+    serverActions: true,
+  },
+  env: {
+    NEXT_PUBLIC_OPENAI_API_KEY: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+  },
 };
 
 module.exports = nextConfig; 
